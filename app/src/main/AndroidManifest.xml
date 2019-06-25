@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.appnghenhackhongservice">
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -11,17 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.appnghenhackhongservice.PhatBaiHatActivity"></activity>
-        <activity android:name="com.example.appnghenhackhongservice.NgheNhacOfflineActivity" />
-        <activity android:name="com.example.appnghenhackhongservice.NgheNhacOnlineActivity" />
-        <activity android:name="com.example.appnghenhackhongservice.MainActivity">
+        <activity android:name=".ListenToMusicOnlineActivity"></activity>
+        <activity android:name=".PlaySongActivity" />
+        <activity android:name=".ListenMuiscOfflineActivity" />
+        <activity android:name=".ListenMusicOnlineActivity" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.example.appnghenhackhongservice.Service.MusicService" android:enabled="true"/>
+
+        <service
+            android:name=".service.MusicService"
+            android:enabled="true" />
     </application>
 
 </manifest>

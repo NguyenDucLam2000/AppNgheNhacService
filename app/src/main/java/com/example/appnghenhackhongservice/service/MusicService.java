@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.Service;
+package com.example.appnghenhackhongservice.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,10 +6,8 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.example.appnghenhackhongservice.Model.BaiHat;
+import com.example.appnghenhackhongservice.model.BaiHat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +20,10 @@ public class MusicService extends Service
     private int position;
     private IBinder iBinder = new BindService();
     Intent intent;
+    Intent intentStartCommand;
     LocalBroadcastManager localBroadcastManager;
     Thread thread;
+    BaiHat baiHat;
 
     public int getPosition()
     {
@@ -43,6 +43,29 @@ public class MusicService extends Service
         listBaiHat = new ArrayList<>();
     }
 
+    public MediaPlayer getMediaPlayer()
+    {
+        return mediaPlayer;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        intentStartCommand = intent;
+        startMusic();
+/*        Timer timer = new Timer();
+        timer.schedule(new TimerTask()
+        {
+            int a = 1;
+            @Override
+            public void run()
+            {
+                Log.d("start ", "value " + a++);
+            }
+        }, 0, 1000);*/
+        return START_STICKY;
+    }
+
     @Override
     public IBinder onBind(Intent intent)
     {
@@ -51,10 +74,14 @@ public class MusicService extends Service
 
     public void startMusic()
     {
-/*        listBaiHat = intent.getParcelableArrayListExtra(AdapterBaiHat.LISTBAIHAT);
-        position = intent.getIntExtra(AdapterBaiHat.POSITION, -1);*/
+        //Log.d("----","Soure " + listBaiHat.get(position).getData());
+/*        listBaiHat = intentStartCommand.getParcelableArrayListExtra(MusicAdapter.LISTBAIHAT);
+        position = intentStartCommand.getIntExtra(MusicAdapter.POSITION, -1);*/
+        //baiHat = intent.getParcelableExtra(MusicAdapter.BAIHAT);
+        //if(baiHat != null)
         if (listBaiHat != null && listBaiHat.size() > 0)
         {
+            //Log.d("---","Soure " + listBaiHat.get(position).getData());
             mediaPlayer = new MediaPlayer();
             try
             {
@@ -72,6 +99,7 @@ public class MusicService extends Service
             updateUI();
         }
     }
+
     public void updateUI()
     {
         thread = new Thread(new Runnable()
@@ -79,7 +107,7 @@ public class MusicService extends Service
             @Override
             public void run()
             {
-                while (mediaPlayer != null)
+                while (mediaPlayer != null && mediaPlayer.isPlaying())
                 {
                     try
                     {
@@ -91,7 +119,6 @@ public class MusicService extends Service
                     {
                         e.printStackTrace();
                     }
-                    //guiDuLieu();
                 }
             }
         });
@@ -102,49 +129,24 @@ public class MusicService extends Service
     {
         intent = new Intent(CURRENT_POSITION);
         intent.putExtra(CURRENT_POSITION, mediaPlayer.getCurrentPosition());
-        Log.d("Value ", mediaPlayer.getCurrentPosition() + "");
+        //Log.d("Value ", mediaPlayer.getCurrentPosition() + "");
         localBroadcastManager.sendBroadcast(intent);
     }
 
     public void xuLyNext(int position)
     {
-        if (isNext())
-        {
-            if (position == listBaiHat.size())
-            {
-                this.position = 0;
-            }
-            else
-            {
-                this.position = position;
-            }
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            startMusic();
-        }
+        this.position = position;
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        startMusic();
     }
 
     public void xuLyPrev(int position)
     {
-        if (isNext())
-        {
-            if (position == -1)
-            {
-                this.position = listBaiHat.size() - 1;
-            }
-            else
-            {
-                this.position = position;
-            }
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            startMusic();
-        }
-    }
-
-    private boolean isNext()
-    {
-        return mediaPlayer != null;
+        this.position = position;
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        startMusic();
     }
 
     public void pause()
@@ -189,12 +191,6 @@ public class MusicService extends Service
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
     public boolean onUnbind(Intent intent)
     {
         //Toast.makeText(getApplicationContext(), "onUnbind", Toast.LENGTH_SHORT).show();
@@ -206,13 +202,18 @@ public class MusicService extends Service
             mediaPlayer = null;
         }
         return false;
-        //return onUnbind(intent);
     }
 
     @Override
     public void onDestroy()
     {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(), "Service is destroyed", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Service is destroyed", Toast.LENGTH_SHORT).show();
+        if (mediaPlayer != null)
+        {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 }

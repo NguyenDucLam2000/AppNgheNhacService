@@ -38,11 +38,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.btnNgheNhacOffline:
-                intent = new Intent(MainActivity.this, NgheNhacOfflineActivity.class);
+                intent = new Intent(MainActivity.this, ListenMuiscOfflineActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btnNgheNhacOnline:
-                intent = new Intent(MainActivity.this, NgheNhacOnlineActivity.class);
+                intent = new Intent(MainActivity.this, ListenMusicOnlineActivity.class);
                 startActivity(intent);
                 break;
             default:

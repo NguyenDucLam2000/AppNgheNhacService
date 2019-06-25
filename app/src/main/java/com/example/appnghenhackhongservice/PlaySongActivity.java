@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,16 +22,16 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.appnghenhackhongservice.Adapter.AdapterBaiHat;
-import com.example.appnghenhackhongservice.Model.BaiHat;
-import com.example.appnghenhackhongservice.Service.MusicService;
+import com.example.appnghenhackhongservice.adapter.MusicAdapter;
+import com.example.appnghenhackhongservice.model.BaiHat;
+import com.example.appnghenhackhongservice.service.MusicService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
-public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
+public class PlaySongActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
 {
     TextView txtPlayTime, txtTenBaiHat;
     ImageView imgPlayorPause, imgNext, imgPrev;
@@ -45,7 +45,7 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
     Intent intent;
     MusicService musicService;
     boolean isBound = false;
-    MediaMetadataRetriever mediaMetadataRetriever;
+    MediaPlayer mediaPlayer;
     BroadcastReceiver broadcastReceiver;
     Notification notification;
     PendingIntent pendingIntent;
@@ -62,25 +62,26 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
         imgPrev = findViewById(R.id.imgPrev);
         sbBaiHat = findViewById(R.id.sbBaiHat);
         listBaiHat = new ArrayList<>();
-        listBaiHat = getIntent().getParcelableArrayListExtra(AdapterBaiHat.LISTBAIHAT);
-        position = getIntent().getIntExtra(AdapterBaiHat.POSITION, -1);
-        baiHat = getIntent().getParcelableExtra(AdapterBaiHat.BAIHAT);
+        listBaiHat = getIntent().getParcelableArrayListExtra(MusicAdapter.LISTBAIHAT);
+        position = getIntent().getIntExtra(MusicAdapter.POSITION, -1);
+        //duration = (int) getIntent().getLongExtra(MusicAdapter.DURATION, - 1);
+        //baiHat = getIntent().getParcelableExtra(MusicAdapter.BAIHAT);
         timer = new Timer();
         //Log.e("ListBaiHat ", listBaiHat.size() + "");
         if (listBaiHat != null && listBaiHat.size() > 0)
         //if(baiHat != null)
         {
             startMusic();
-            updateUI();
 /*            handler = new Handler()
             {
                 @Override
                 public void handleMessage(Message msg)
                 {
-                    super.handleMessage(msg);
 
+                    super.handleMessage(msg);
                 }
             };*/
+            updateUI();
         }
     }
 
@@ -90,34 +91,44 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
         // BIND_AUTO_CREATE sẽ start nếu service chưa được khởi tạo, nếu đã tạo rồi sẽ k start nữa
         if(!isBound)
         {
-            intent = new Intent(PhatBaiHatActivity.this, MusicService.class);
-            intent.putParcelableArrayListExtra(AdapterBaiHat.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
-            intent.putExtra(AdapterBaiHat.POSITION, position);
+            intent = new Intent(getApplicationContext(), MusicService.class);
+            intent.putParcelableArrayListExtra(MusicAdapter.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
+            intent.putExtra(MusicAdapter.POSITION, position);
             bindService(intent, serviceConnection, BIND_AUTO_CREATE);
         }
+
         imgPlayorPause.setImageResource(R.drawable.pause);
         txtTenBaiHat.setText(listBaiHat.get(position).getTenBaiHat());
-        mediaMetadataRetriever = new MediaMetadataRetriever();
-        mediaMetadataRetriever.setDataSource(listBaiHat.get(position).getData());
-        // Lấy ra thời lượng của bài hát
-        duration = Integer.parseInt(mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-        Log.e("Soure ", listBaiHat.get(position).getData());
+        mediaPlayer = new MediaPlayer();
+        try
+        {
+            mediaPlayer.setDataSource(listBaiHat.get(position).getData());
+            mediaPlayer.prepare();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        duration = (int) listBaiHat.get(position).getThoiGian();
         txtPlayTime.setText("00:00/" + new SimpleDateFormat("mm:ss").format(duration));
-        //txtPlayTime.setText((new SimpleDateFormat("mm:ss")).format(mediaPlayer.getDuration()));
         sbBaiHat.setMax(duration);
         showNotifycation();
     }
-
     ServiceConnection serviceConnection = new ServiceConnection()
     {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service)
         {
+            LocalBroadcastManager.getInstance(PlaySongActivity.this).registerReceiver(broadcastReceiver, new IntentFilter(MusicService.CURRENT_POSITION));
             musicService = ((MusicService.BindService) service).getService();
             musicService.setListBaiHat(listBaiHat);
             musicService.setPosition(position);
-            musicService.startMusic();
-            //startService(intent);
+            Intent intent = new Intent(PlaySongActivity.this, MusicService.class);
+/*            intent.putParcelableArrayListExtra(MusicAdapter.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
+            intent.putExtra(MusicAdapter.POSITION, position);*/
+            //intent.putExtra(MusicAdapter.BAIHAT, listBaiHat.get(position));
+            startService(intent);
             isBound = true;
         }
 
@@ -125,6 +136,8 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
         public void onServiceDisconnected(ComponentName name)
         {
             musicService = null;
+            //Toast.makeText(getApplicationContext(), "Service Disconnected", Toast.LENGTH_SHORT).show();
+            Log.d("onServiceDisconnected ", "Service Disconnected");
             isBound = false;
         }
     };
@@ -144,7 +157,6 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_phat_bai_hat);
         addControls();
         addEvents();
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(MusicService.CURRENT_POSITION));
     }
 
     private void updateUI()
@@ -157,6 +169,7 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
                 currentPosition = intent.getIntExtra(MusicService.CURRENT_POSITION, -1);
                 //Log.d("Send ", currentPosition + "");
                 txtPlayTime.setText((new SimpleDateFormat("mm:ss")).format(currentPosition) + "/" + (new SimpleDateFormat("mm:ss")).format(duration));
+                //txtPlayTime.setText((new SimpleDateFormat("mm:ss")).format(currentPosition) + "/" + duration / 60 + ":" + ((duration % 60) <= 9 ? ("0" + (duration % 60) ) : duration % 60));
                 sbBaiHat.setProgress(currentPosition);
             }
         };
@@ -164,18 +177,14 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
 
     private void showNotifycation()
     {
-        intent = new Intent(this, PhatBaiHatActivity.class);
+        intent = new Intent(this, PlaySongActivity.class);
         pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         notification = new Notification.Builder(this).setContentTitle(listBaiHat.get(position).getTenCaSi())
                 .setContentText(listBaiHat.get(position).getTenBaiHat())
                 .setSmallIcon(R.drawable.music).setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .addAction(R.drawable.prev, "Prev", pendingIntent)
-                .addAction(R.drawable.play, "PlayOrPause", pendingIntent)
-                .addAction(R.drawable.next, "Next", pendingIntent).build();
+                .setContentIntent(pendingIntent).build();
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
         notificationManager.notify(NOTIFYCATION_ID, notification);
     }
 
@@ -202,21 +211,38 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
     {
         if(listBaiHat.size() > 0)
         {
-            position++;
-            musicService.xuLyNext(position);
-            startMusic();
+            if(isNext())
+            {
+                position++;
+                if (position == listBaiHat.size())
+                {
+                    position = 0;
+                }
+                musicService.xuLyNext(position);
+                startMusic();
+            }
         }
-
     }
 
     private void xuLyPrev()
     {
         if(listBaiHat.size() > 0)
         {
-            position--;
+            if (isNext())
+            {
+                position--;
+                if (position == -1)
+                {
+                    position = listBaiHat.size() - 1;
+                }
+            }
             musicService.xuLyPrev(position);
             startMusic();
         }
+    }
+    private boolean isNext()
+    {
+        return musicService.getMediaPlayer() != null;
     }
 
     private void xuLyPlayOrPause()
@@ -250,6 +276,14 @@ public class PhatBaiHatActivity extends AppCompatActivity implements View.OnClic
     {
         musicService.seekTo(seekBar.getProgress());
     }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        //getApplicationContext().bindService(intent, serviceConnection, BIND_AUTO_CREATE);
+    }
+
     @Override
     protected void onDestroy()
     {

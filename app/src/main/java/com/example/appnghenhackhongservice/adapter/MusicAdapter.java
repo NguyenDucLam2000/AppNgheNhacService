@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.Adapter;
+package com.example.appnghenhackhongservice.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,21 +6,20 @@ import android.graphics.BitmapFactory;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.appnghenhackhongservice.Model.BaiHat;
-import com.example.appnghenhackhongservice.PhatBaiHatActivity;
+import com.example.appnghenhackhongservice.PlaySongActivity;
 import com.example.appnghenhackhongservice.R;
+import com.example.appnghenhackhongservice.model.BaiHat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterBaiHat extends RecyclerView.Adapter<AdapterBaiHat.ViewHolder>
+public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder>
 {
     private List<BaiHat> listBaiHat;
     private Context context;
@@ -28,12 +27,15 @@ public class AdapterBaiHat extends RecyclerView.Adapter<AdapterBaiHat.ViewHolder
     public static String BAIHAT = "BaiHat";
     public static String LISTBAIHAT = "ListBaiHat";
     public static String POSITION = "Position";
+    public static String DURATION = "Duration";
     private boolean isSend = false;
-    public AdapterBaiHat()
+
+    public MusicAdapter()
     {
 
     }
-    public AdapterBaiHat(Context context, List<BaiHat> listBaiHat)
+
+    public MusicAdapter(Context context, List<BaiHat> listBaiHat)
     {
         this.context = context;
         this.listBaiHat = listBaiHat;
@@ -61,7 +63,7 @@ public class AdapterBaiHat extends RecyclerView.Adapter<AdapterBaiHat.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
-        if(listBaiHat.get(i).getHinh() != null)
+        if (listBaiHat.get(i).getHinh() != null)
         {
             viewHolder.imgHinh.setImageBitmap(BitmapFactory.decodeFile(listBaiHat.get(i).getHinh()));
         }
@@ -69,9 +71,18 @@ public class AdapterBaiHat extends RecyclerView.Adapter<AdapterBaiHat.ViewHolder
         {
             viewHolder.imgHinh.setImageResource(R.drawable.music);
         }
-        viewHolder.txtTenCaSi.setText(listBaiHat.get(i).getTenBaiHat());
-        viewHolder.txtTenBaiHat.setText(listBaiHat.get(i).getTenCaSi());
-        viewHolder.txtThoiGianBaiHat.setText((listBaiHat.get(i).getThoiGian() / 60) + ":" +(listBaiHat.get(i).getThoiGian() % 60 <= 9 ? ("0" + listBaiHat.get(i).getThoiGian() % 60) : listBaiHat.get(i).getThoiGian() % 60));
+        if (listBaiHat.get(i).getTenCaSi() != null)
+        {
+            viewHolder.txtTenCaSi.setText(listBaiHat.get(i).getTenCaSi());
+        }
+        else
+        {
+            viewHolder.txtTenCaSi.setText("None");
+        }
+        viewHolder.txtTenBaiHat.setText(listBaiHat.get(i).getTenBaiHat());
+        //Log.d("Name", listBaiHat.get(i).getTenBaiHat());
+        long time = listBaiHat.get(i).getThoiGian() / 1000;
+        viewHolder.txtThoiGianBaiHat.setText((time / 60) + ":" + (time % 60 <= 9 ? ("0" + time % 60) : time % 60));
     }
 
     @Override
@@ -84,6 +95,7 @@ public class AdapterBaiHat extends RecyclerView.Adapter<AdapterBaiHat.ViewHolder
     {
         ImageView imgHinh;
         TextView txtTenCaSi, txtTenBaiHat, txtThoiGianBaiHat;
+
         public ViewHolder(@NonNull View itemView)
         {
             super(itemView);
@@ -97,17 +109,21 @@ public class AdapterBaiHat extends RecyclerView.Adapter<AdapterBaiHat.ViewHolder
         @Override
         public void onClick(View v)
         {
-            intent = new Intent(context, PhatBaiHatActivity.class);
+
+            //Toast.makeText(context, listBaiHat.get(getAdapterPosition()).getThoiGian() + "", Toast.LENGTH_LONG).show();
+
+            intent = new Intent(context, PlaySongActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             //intent.putExtra(BAIHAT, listBaiHat.get(getAdapterPosition()));
-     /*       if(isSend == false)
+/*            if(isSend == false)
             {
                 isSend = true;
             }*/
             intent.putParcelableArrayListExtra(LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
             intent.putExtra(POSITION, getAdapterPosition());
-            Log.d("Position", getAdapterPosition() + "");
-            Log.d("baiHat", listBaiHat.get(getAdapterPosition()).getTenBaiHat());
+            //intent.putExtra(DURATION, listBaiHat.get(getAdapterPosition()).getThoiGian());
+            //Log.d("Position", getAdapterPosition() + "");
+            //Log.d("baiHat", listBaiHat.get(getAdapterPosition()).getTenBaiHat());
             context.startActivity(intent);
         }
     }

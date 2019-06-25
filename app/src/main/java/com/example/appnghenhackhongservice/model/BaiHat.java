@@ -1,12 +1,23 @@
-package com.example.appnghenhackhongservice.Model;
+package com.example.appnghenhackhongservice.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class BaiHat implements Parcelable
+public class BaiHat implements Parcelable, Comparable<BaiHat>
 {
     private String hinh;
     private long thoiGian;
+    private int vitri;
+
+    public BaiHat(int vitri, String hinh, long thoiGian, String tenCaSi, String tenBaiHat, String data)
+    {
+        this.hinh = hinh;
+        this.thoiGian = thoiGian;
+        this.tenCaSi = tenCaSi;
+        this.tenBaiHat = tenBaiHat;
+        this.data = data;
+        this.vitri = vitri;
+    }
 
     public BaiHat(String hinh, long thoiGian, String tenCaSi, String tenBaiHat, String data)
     {
@@ -29,6 +40,15 @@ public class BaiHat implements Parcelable
 
     private String tenCaSi, tenBaiHat, data;
 
+    public int getVitri()
+    {
+        return vitri;
+    }
+
+    public void setVitri(int vitri)
+    {
+        this.vitri = vitri;
+    }
 
     public BaiHat()
     {
@@ -41,6 +61,7 @@ public class BaiHat implements Parcelable
         tenCaSi = in.readString();
         tenBaiHat = in.readString();
         data = in.readString();
+        vitri = in.readInt();
     }
 
     public static final Creator<BaiHat> CREATOR = new Creator<BaiHat>()
@@ -112,11 +133,21 @@ public class BaiHat implements Parcelable
         dest.writeString(tenCaSi);
         dest.writeString(tenBaiHat);
         dest.writeString(data);
+        dest.writeInt(vitri);
     }
 
     @Override
-    public String toString()
+    public int compareTo(BaiHat o)
     {
-        return "BaiHat{" + "hinh='" + hinh + '\'' + ", thoiGian=" + thoiGian + ", tenCaSi='" + tenCaSi + '\'' + ", tenBaiHat='" + tenBaiHat + '\'' + ", data='" + data + '\'' + '}';
+        if(this.vitri == o.vitri)
+        {
+            return 0;
+        }
+        else if(this.vitri > o.vitri)
+        {
+            return 1;
+        }
+        return -1;
     }
+
 }
