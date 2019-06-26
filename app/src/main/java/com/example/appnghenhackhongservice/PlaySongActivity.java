@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -54,6 +55,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void onServiceConnected(ComponentName name, IBinder service)
         {
+            Log.d("AAA", "In");
             Toast.makeText(getApplicationContext(), "Service is conected", Toast.LENGTH_LONG).show();
             LocalBroadcastManager.getInstance(PlaySongActivity.this).registerReceiver(broadcastReceiver, new IntentFilter(MusicService.CURRENT_POSITION));
             bindService = (MusicService.BindService) service;
@@ -65,9 +67,9 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
             //intent.putExtra(MusicAdapter.BAIHAT, listBaiHat.get(position));
             //startService(intent);
 
-            musicService.setBaiHat(baiHat);
+/*            musicService.setBaiHat(baiHat);
             musicService.setListBaiHat(listBaiHat);
-            musicService.setPosition(position);
+            musicService.setPosition(position);*/
             musicService.startMusic();
             isBound = true;
         }
@@ -91,8 +93,11 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         position = getIntent().getIntExtra(MusicAdapter.POSITION, -1);
 
         bindService(new Intent(getApplicationContext(), MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
-        Intent startNotStickyIntent = new Intent(getApplicationContext(), MusicService.class);
-        startService(startNotStickyIntent);
+        Intent intent = new Intent(getApplicationContext(), MusicService.class);
+        intent.putParcelableArrayListExtra(MusicAdapter.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
+        intent.putExtra(MusicAdapter.POSITION, position);
+        //intent.putExtra(MusicAdapter.BAIHAT, listBaiHat.get(position));
+        startService(intent);
     }
 
     private void addControls()
@@ -120,13 +125,6 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
     {
         // Khởi động BoundService, nhận vào 3 tham số, intent, serviceconection, flag
         // BIND_AUTO_CREATE sẽ start nếu service chưa được khởi tạo, nếu đã tạo rồi sẽ k start nữa
-/*        if(!isBound)
-        {
-            intent = new Intent(getApplicationContext(), MusicService.class);
-*//*            intent.putParcelableArrayListExtra(MusicAdapter.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
-            intent.putExtra(MusicAdapter.POSITION, position);*//*
-            bindService(intent, serviceConnection, BIND_AUTO_CREATE);
-        }*/
         imgPlayorPause.setImageResource(R.drawable.pause);
         txtTenBaiHat.setText(listBaiHat.get(position).getTenBaiHat());
 

@@ -16,6 +16,17 @@ public class LoadListSong extends AsyncTask<Void, Void, ArrayList<BaiHat>>
     private Context context;
     private ContentResolver musicResolver;
     private Cursor cursor;
+    private ListSong listSong;
+
+    public ListSong getListSong()
+    {
+        return listSong;
+    }
+
+    public void setListSong(ListSong listSong)
+    {
+        this.listSong = listSong;
+    }
 
     public LoadListSong(Context context)
     {
@@ -47,4 +58,10 @@ public class LoadListSong extends AsyncTask<Void, Void, ArrayList<BaiHat>>
         return listBaiHat;
     }
 
+    @Override
+    protected void onPostExecute(ArrayList<BaiHat> baiHats)
+    {
+        super.onPostExecute(baiHats);
+        listSong.getListSong(baiHats);
+    }
 }

@@ -7,8 +7,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.example.appnghenhackhongservice.R;
+import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.BaiHat;
 
 import java.util.ArrayList;
@@ -46,15 +47,13 @@ public class MusicService extends Service
     {
         this.position = position;
     }
-    MediaPlayer m1;
     @Override
     public void onCreate()
     {
         super.onCreate();
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
+        Toast.makeText(this,"onCreate", Toast.LENGTH_LONG).show();
         listBaiHat = new ArrayList<>();
-        m1 =  MediaPlayer.create(this, R.raw.song);
-
     }
 
     public MediaPlayer getMediaPlayer()
@@ -66,14 +65,17 @@ public class MusicService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         intentStartCommand = intent;
-        m1.start();
         //super.onStartCommand(intent, flags, startId);
-        return START_STICKY;
+        Toast.makeText(this,"onStartComand", Toast.LENGTH_LONG).show();
+        listBaiHat = intent.getParcelableArrayListExtra(MusicAdapter.LISTBAIHAT);
+        position = intent.getIntExtra(MusicAdapter.POSITION, -1);
+        return START_NOT_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent)
     {
+        Toast.makeText(this,"onBind", Toast.LENGTH_LONG).show();
         return iBinder;
     }
 
