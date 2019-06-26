@@ -55,7 +55,6 @@ public class LoadListSongFromAPI extends AsyncTask<Void, Void, String>
                 builder.append(line);
             }
             inputStream.close();
-            //Log.d("Dữ liệu ", builder.toString());
             return builder.toString();
         }
         catch (Exception e)

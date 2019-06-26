@@ -6,7 +6,9 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
+import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.model.BaiHat;
 
 import java.util.ArrayList;
@@ -25,6 +27,16 @@ public class MusicService extends Service
     Thread thread;
     BaiHat baiHat;
 
+    public BaiHat getBaiHat()
+    {
+        return baiHat;
+    }
+
+    public void setBaiHat(BaiHat baiHat)
+    {
+        this.baiHat = baiHat;
+    }
+
     public int getPosition()
     {
         return position;
@@ -34,13 +46,15 @@ public class MusicService extends Service
     {
         this.position = position;
     }
-
+    MediaPlayer m1;
     @Override
     public void onCreate()
     {
         super.onCreate();
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         listBaiHat = new ArrayList<>();
+        m1 =  MediaPlayer.create(this, R.raw.song);
+
     }
 
     public MediaPlayer getMediaPlayer()
@@ -52,17 +66,8 @@ public class MusicService extends Service
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         intentStartCommand = intent;
-        startMusic();
-/*        Timer timer = new Timer();
-        timer.schedule(new TimerTask()
-        {
-            int a = 1;
-            @Override
-            public void run()
-            {
-                Log.d("start ", "value " + a++);
-            }
-        }, 0, 1000);*/
+        m1.start();
+        //super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
@@ -81,7 +86,7 @@ public class MusicService extends Service
         //if(baiHat != null)
         if (listBaiHat != null && listBaiHat.size() > 0)
         {
-            //Log.d("---","Soure " + listBaiHat.get(position).getData());
+            Log.d("---","Soure " + listBaiHat.get(position).getData());
             mediaPlayer = new MediaPlayer();
             try
             {
@@ -107,12 +112,15 @@ public class MusicService extends Service
             @Override
             public void run()
             {
-                while (mediaPlayer != null && mediaPlayer.isPlaying())
+                while (mediaPlayer != null)
                 {
                     try
                     {
-                        guiDuLieu();
-                        Thread.sleep(1000);
+                        if (mediaPlayer.isPlaying())
+                        {
+                            guiDuLieu();
+                        }
+                        Thread.sleep(500);
                         //Log.d("ThreadName ", thread.getName());
                     }
                     catch (InterruptedException e)
@@ -123,6 +131,12 @@ public class MusicService extends Service
             }
         });
         thread.start();
+    }
+
+    public void setSongsandSong(BaiHat baiHat, List<BaiHat> listBaiHat)
+    {
+        this.baiHat = baiHat;
+        this.listBaiHat = listBaiHat;
     }
 
     private void guiDuLieu()
@@ -190,7 +204,7 @@ public class MusicService extends Service
         this.listBaiHat = listBaiHat;
     }
 
-    @Override
+/*    @Override
     public boolean onUnbind(Intent intent)
     {
         //Toast.makeText(getApplicationContext(), "onUnbind", Toast.LENGTH_SHORT).show();
@@ -201,10 +215,12 @@ public class MusicService extends Service
             mediaPlayer.release();
             mediaPlayer = null;
         }
+        //return super.onUnbind(intent);
         return false;
-    }
+    }*/
 
-    @Override
+
+/*    @Override
     public void onDestroy()
     {
         super.onDestroy();
@@ -215,5 +231,5 @@ public class MusicService extends Service
             mediaPlayer.release();
             mediaPlayer = null;
         }
-    }
+    }*/
 }
