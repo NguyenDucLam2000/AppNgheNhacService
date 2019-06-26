@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -55,7 +56,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void onServiceConnected(ComponentName name, IBinder service)
         {
-            Log.d("AAA", "In");
+            Log.e("AAA", "In");
             Toast.makeText(getApplicationContext(), "Service is conected", Toast.LENGTH_LONG).show();
             LocalBroadcastManager.getInstance(PlaySongActivity.this).registerReceiver(broadcastReceiver, new IntentFilter(MusicService.CURRENT_POSITION));
             bindService = (MusicService.BindService) service;
@@ -97,7 +98,11 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         intent.putParcelableArrayListExtra(MusicAdapter.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
         intent.putExtra(MusicAdapter.POSITION, position);
         //intent.putExtra(MusicAdapter.BAIHAT, listBaiHat.get(position));
-        startService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
     }
 
     private void addControls()
