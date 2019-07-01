@@ -1,311 +1,284 @@
 package com.example.appnghenhackhongservice;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
-import android.os.Parcelable;
-import android.support.v4.content.LocalBroadcastManager;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.appnghenhackhongservice.Player.AutoNext;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
-import com.example.appnghenhackhongservice.model.BaiHat;
+import com.example.appnghenhackhongservice.model.Song;
+import com.example.appnghenhackhongservice.notification.MusicNotifycation;
+import com.example.appnghenhackhongservice.recevier.UpdateUI;
 import com.example.appnghenhackhongservice.service.MusicService;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
-public class PlaySongActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener
-{
-    TextView txtPlayTime, txtTenBaiHat;
+public class PlaySongActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, UpdateUI, AutoNext {
+    TextView txtPlayTime, txtSongName;
     ImageView imgPlayorPause, imgNext, imgPrev;
-    SeekBar sbBaiHat;
-    BaiHat baiHat;
-    Timer timer;
-    List<BaiHat> listBaiHat;
+    SeekBar sbSong;
+    Song song;
+    List<Song> listSong;
     int position;
     int duration;
-    int currentPosition;
+    private int mCurrentPosition;
     Intent intent;
-    MusicService musicService;
+    private MusicService musicService;
     boolean isBound = false;
-    BroadcastReceiver broadcastReceiver;
-    Notification notification;
-    PendingIntent pendingIntent;
     MusicService.BindService bindService;
-    private static final int NOTIFYCATION_ID = 100;
-    NotificationManager notificationManager;
-    ServiceConnection serviceConnection = new ServiceConnection()
-    {
+    MusicNotifycation mMusicNotifycation;
+    private Handler mHandler;
+    private boolean change = true;
+    public static boolean typeListSong = false;
+
+    public void runOnUiThread() {
+        mHandler = new Handler();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (musicService.getmMusicPlayer().getmMediaPlayer() != null) {
+                    mCurrentPosition = musicService.getmMusicPlayer().getmMediaPlayer().getCurrentPosition();
+                    sbSong.setProgress(mCurrentPosition);
+                    txtPlayTime.setText((new SimpleDateFormat("mm:ss")).format(mCurrentPosition) + "/" + (new SimpleDateFormat("mm:ss")).format(duration));
+                }
+                mHandler.post(this);
+
+            }
+        });
+    }
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service)
-        {
-            Log.e("AAA", "In");
-            Toast.makeText(getApplicationContext(), "Service is conected", Toast.LENGTH_LONG).show();
-            LocalBroadcastManager.getInstance(PlaySongActivity.this).registerReceiver(broadcastReceiver, new IntentFilter(MusicService.CURRENT_POSITION));
+        public void onServiceConnected(ComponentName name, IBinder service) {
             bindService = (MusicService.BindService) service;
             musicService = bindService.getService();
-
-            //Intent intent = new Intent(PlaySongActivity.this, MusicService.class);
-/*            intent.putParcelableArrayListExtra(MusicAdapter.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
-            intent.putExtra(MusicAdapter.POSITION, position);*/
-            //intent.putExtra(MusicAdapter.BAIHAT, listBaiHat.get(position));
-            //startService(intent);
-
-/*            musicService.setBaiHat(baiHat);
-            musicService.setListBaiHat(listBaiHat);
-            musicService.setPosition(position);*/
-            musicService.startMusic();
+            mMusicNotifycation = musicService.getmMusicNotifycation();
             isBound = true;
+            musicService.getmMusicPlayer().setListSong(listSong);
+            musicService.getmMusicPlayer().setSong(song);
+            musicService.getmMusicPlayer().setPosition(position);
+            if (musicService.getmMusicPlayer().getListSong() != null && musicService.getmMusicPlayer().getListSong().size() > 0) {
+                if (typeListSong) {
+                    musicService.getmMusicPlayer().startMusic();
+                }
+                musicService.getmMusicPlayer().showNotification();
+                musicService.getmMusicPlayer().setAutoNext(PlaySongActivity.this);
+                musicService.getmMusicPlayer().getReceiver().setUpdateUI(PlaySongActivity.this);
+                startMusic();
+                runOnUiThread();
+            }
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName name)
-        {
-            Toast.makeText(getApplicationContext(), "Service is Disconnected", Toast.LENGTH_LONG).show();
-            //musicService = null;
-            //Toast.makeText(getApplicationContext(), "Service Disconnected", Toast.LENGTH_SHORT).show();
-            Log.d("onServiceDisconnected ", "Service Disconnected");
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
             isBound = false;
         }
     };
 
-    public void doBindServie()
-    {
-        listBaiHat = new ArrayList<>();
-        baiHat = getIntent().getParcelableExtra(MusicAdapter.BAIHAT);
-        listBaiHat = getIntent().getParcelableArrayListExtra(MusicAdapter.LISTBAIHAT);
-        position = getIntent().getIntExtra(MusicAdapter.POSITION, -1);
-
-        bindService(new Intent(getApplicationContext(), MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
-        Intent intent = new Intent(getApplicationContext(), MusicService.class);
-        intent.putParcelableArrayListExtra(MusicAdapter.LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
-        intent.putExtra(MusicAdapter.POSITION, position);
-        //intent.putExtra(MusicAdapter.BAIHAT, listBaiHat.get(position));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent);
-        } else {
-            startService(intent);
-        }
-    }
-
-    private void addControls()
-    {
-        txtPlayTime = findViewById(R.id.txtPlayTime);
-        txtTenBaiHat = findViewById(R.id.txtTenBaiHat);
-        imgPlayorPause = findViewById(R.id.imgPlayorPause);
-        imgNext = findViewById(R.id.imgNext);
-        imgPrev = findViewById(R.id.imgPrev);
-        sbBaiHat = findViewById(R.id.sbBaiHat);
-
-        //duration = (int) getIntent().getLongExtra(MusicAdapter.DURATION, - 1);
-        //baiHat = getIntent().getParcelableExtra(MusicAdapter.BAIHAT);
-        //Log.e("ListBaiHat ", listBaiHat.size() + "");
-        if (listBaiHat != null && listBaiHat.size() > 0)
-        //if(baiHat != null)
-        {
-            startMusic();
-            updateUI();
-        }
-    }
-
-
-    private void startMusic()
-    {
-        // Khởi động BoundService, nhận vào 3 tham số, intent, serviceconection, flag
-        // BIND_AUTO_CREATE sẽ start nếu service chưa được khởi tạo, nếu đã tạo rồi sẽ k start nữa
-        imgPlayorPause.setImageResource(R.drawable.pause);
-        txtTenBaiHat.setText(listBaiHat.get(position).getTenBaiHat());
-
-        duration = (int) listBaiHat.get(position).getThoiGian();
-        txtPlayTime.setText("00:00/" + new SimpleDateFormat("mm:ss").format(duration));
-        sbBaiHat.setMax(duration);
-        showNotifycation();
-    }
-
-    private void addEvents()
-    {
-        imgPlayorPause.setOnClickListener(this);
-        imgPrev.setOnClickListener(this);
-        imgNext.setOnClickListener(this);
-        sbBaiHat.setOnSeekBarChangeListener(this);
-    }
-
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_phat_bai_hat);
+        setContentView(R.layout.activity_playsong);
         doBindServie();
         addControls();
         addEvents();
     }
 
-    private void updateUI()
-    {
-        broadcastReceiver = new BroadcastReceiver()
-        {
-            @Override
-            public void onReceive(Context context, Intent intent)
-            {
-                currentPosition = intent.getIntExtra(MusicService.CURRENT_POSITION, -1);
-                //Log.d("Send ", currentPosition + "");
-                txtPlayTime.setText((new SimpleDateFormat("mm:ss")).format(currentPosition) + "/" + (new SimpleDateFormat("mm:ss")).format(duration));
-                //txtPlayTime.setText((new SimpleDateFormat("mm:ss")).format(currentPosition) + "/" + duration / 60 + ":" + ((duration % 60) <= 9 ? ("0" + (duration % 60) ) : duration % 60));
-                sbBaiHat.setProgress(currentPosition);
-            }
-        };
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
     }
 
-    private void showNotifycation()
-    {
-        intent = new Intent(this, PlaySongActivity.class);
-        pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    public void doBindServie() {
+        typeListSong = getIntent().getBooleanExtra(MusicAdapter.TYPE, false);
+        if (typeListSong) { // getIntent from Adapter
+            //song = getIntent().getParcelableExtra(MusicAdapter.BAIHAT);
+            listSong = getIntent().getParcelableArrayListExtra(MusicAdapter.LIST_SONG);
+            position = getIntent().getIntExtra(MusicAdapter.POSITION, -1);
 
-        notification = new Notification.Builder(this).setContentTitle(listBaiHat.get(position).getTenCaSi()).setContentText(listBaiHat.get(position).getTenBaiHat()).setSmallIcon(R.drawable.music).setAutoCancel(true).setContentIntent(pendingIntent).build();
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(NOTIFYCATION_ID, notification);
+        }
+        else { // getIntent from notitycation
+            listSong = getIntent().getParcelableArrayListExtra(MusicNotifycation.LIST_SONG);
+            position = getIntent().getIntExtra(MusicNotifycation.POSITION, -1);
+        }
+        bindService(new Intent(getApplicationContext(), MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+        intent = new Intent(getApplicationContext(), MusicService.class);
+/*        if (typeListSong) {
+
+        }*/
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        }
+        else {
+            startService(intent);
+        }
+    }
+
+    private void addControls() {
+        txtPlayTime = findViewById(R.id.txtPlayTime);
+        txtSongName = findViewById(R.id.txtSongName);
+        imgPlayorPause = findViewById(R.id.imgPlayorPause);
+        imgNext = findViewById(R.id.imgNext);
+        imgPrev = findViewById(R.id.imgPrev);
+        sbSong = findViewById(R.id.sbSong);
+    }
+
+    private void startMusic() {
+        // Khởi động BoundService, nhận vào 3 tham số, intent, serviceconection, flag
+        // BIND_AUTO_CREATE sẽ start nếu service chưa được khởi tạo, nếu đã tạo rồi sẽ k start nữa
+        if(musicService.getmMusicPlayer().isPlaying()){
+            imgPlayorPause.setImageResource(R.drawable.pause);
+        }
+        else {
+            imgPlayorPause.setImageResource(R.drawable.play);
+        }
+        txtSongName.setText(listSong.get(position).getSongName());
+        duration = (int) listSong.get(position).gettime();
+        txtPlayTime.setText("00:00/" + new SimpleDateFormat("mm:ss").format(duration));
+        sbSong.setMax(duration);
+    }
+
+    private void addEvents() {
+        imgPlayorPause.setOnClickListener(this);
+        imgPrev.setOnClickListener(this);
+        imgNext.setOnClickListener(this);
+        sbSong.setOnSeekBarChangeListener(this);
     }
 
     @Override
-    public void onClick(View v)
-    {
-        switch (v.getId())
-        {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.imgPlayorPause:
-                xuLyPlayOrPause();
+                playOrPause();
                 break;
             case R.id.imgNext:
-                xuLyNext();
+                next();
                 break;
             case R.id.imgPrev:
-                xuLyPrev();
+                prev();
                 break;
             default:
                 break;
         }
     }
 
-    private void xuLyNext()
-    {
-        if (listBaiHat.size() > 0)
-        {
-            if (isNext())
-            {
+    private void next() {
+        if (listSong.size() > 0) {
+            if (musicService.getmMusicPlayer().isNext()) {
                 position++;
-                if (position == listBaiHat.size())
-                {
+                if (position == listSong.size()) {
                     position = 0;
                 }
-                musicService.xuLyNext(position);
+                if (change) {
+                    musicService.getmMusicPlayer().next();
+                }
                 startMusic();
+                change = true;
             }
         }
     }
 
-    private void xuLyPrev()
-    {
-        if (listBaiHat.size() > 0)
-        {
-            if (isNext())
-            {
+    private void prev() {
+        if (listSong.size() > 0) {
+            if (musicService.getmMusicPlayer().isNext()) {
                 position--;
-                if (position == -1)
-                {
-                    position = listBaiHat.size() - 1;
+                if (position == -1) {
+                    position = listSong.size() - 1;
                 }
             }
-            musicService.xuLyPrev(position);
-            startMusic();
-        }
-    }
-
-    private boolean isNext()
-    {
-        return musicService.getMediaPlayer() != null;
-    }
-
-    private void xuLyPlayOrPause()
-    {
-        if (musicService.isPlaying())
-        {
-            imgPlayorPause.setImageResource(R.drawable.play);
-            musicService.pause();
-        }
-        else
-        {
-            imgPlayorPause.setImageResource(R.drawable.pause);
-            musicService.play();
-        }
-
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-    {
-
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar)
-    {
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar)
-    {
-        musicService.seekTo(seekBar.getProgress());
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-/*        if (isBound)
-        {
-            unbindService(serviceConnection);
-        }
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);*/
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-/*        if (mediaPlayer != null)
-        {
-            if (mediaPlayer.isPlaying())
-            {
-                mediaPlayer.stop();
-                mediaPlayer.release();
+            if (change) {
+                musicService.getmMusicPlayer().prev();
             }
-        }*/
-/*        Log.d("Destroy ", "Destroyed");
-        if (isBound)
-        {
-            Log.d("Destroy 2", "Destroyed");
-            unbindService(serviceConnection);
-        }*/
-        //Log.d("onDestroy", "onDestroy");
-        //LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+            startMusic();
+            change = true;
+        }
     }
 
+    private void playOrPause() {
+        int resId = 0;
+        if (change) {
+            musicService.getmMusicPlayer().playOrPause();
+        }
+        if (musicService.getmMusicPlayer().isPlaying()) {
+            resId = R.drawable.pause;
+        }
+        else {
+            resId = R.drawable.play;
+        }
+        imgPlayorPause.setImageResource(resId);
+        change = true;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        musicService.getmMusicPlayer().getmMediaPlayer().seekTo(seekBar.getProgress());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isBound) {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+/*        if (isBound) {
+            musicService.getmMusicPlayer().release();
+            unbindService(serviceConnection);
+            isBound = false;
+            stopService(intent);
+        }*/
+    }
+
+    @Override
+    public void onNext() {
+        change = false;
+        next();
+    }
+
+    @Override
+    public void onPrev() {
+        change = false;
+        prev();
+    }
+
+    @Override
+    public void onPlayOrPause() {
+        change = false;
+        playOrPause();
+    }
+
+    @Override
+    public void onAutoNext() {
+        next();
+    }
 }

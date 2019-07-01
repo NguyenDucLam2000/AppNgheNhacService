@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListenMuiscOfflineActivity">
+    tools:context=".offline.ListenMuiscOfflineActivity">
 
     <ImageView
         android:scaleType="fitXY"
@@ -14,7 +14,7 @@
         android:layout_height="match_parent" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvDanhSachBaiHat"
+        android:id="@+id/rvListSongs"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

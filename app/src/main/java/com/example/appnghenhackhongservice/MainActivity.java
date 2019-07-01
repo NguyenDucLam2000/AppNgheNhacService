@@ -6,21 +6,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.appnghenhackhongservice.offline.ListenMuiscOfflineActivity;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener
 {
-    Button btnNgheNhacOnline, btnNgheNhacOffline;
+    Button btnListenToMusicOnline, btnListenToMusicOffline;
     Intent intent;
 
     private void addControls()
     {
-        btnNgheNhacOffline = findViewById(R.id.btnNgheNhacOffline);
-        btnNgheNhacOnline = findViewById(R.id.btnNgheNhacOnline);
+        btnListenToMusicOffline = findViewById(R.id.btnListenToMusicOffline);
+        btnListenToMusicOnline = findViewById(R.id.btnListenToMusicOnline);
     }
 
     private void addEvents()
     {
-        btnNgheNhacOnline.setOnClickListener(this);
-        btnNgheNhacOffline.setOnClickListener(this);
+        btnListenToMusicOnline.setOnClickListener(this);
+        btnListenToMusicOffline.setOnClickListener(this);
     }
 
     @Override
@@ -37,11 +39,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     {
         switch (v.getId())
         {
-            case R.id.btnNgheNhacOffline:
+            case R.id.btnListenToMusicOffline:
                 intent = new Intent(MainActivity.this, ListenMuiscOfflineActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.btnNgheNhacOnline:
+            case R.id.btnListenToMusicOnline:
                 intent = new Intent(MainActivity.this, ListenMusicOnlineActivity.class);
                 startActivity(intent);
                 break;

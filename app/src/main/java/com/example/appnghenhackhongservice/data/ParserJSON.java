@@ -1,8 +1,8 @@
-package com.example.appnghenhackhongservice.parserjon;
+package com.example.appnghenhackhongservice.data;
 
 import android.content.Context;
 
-import com.example.appnghenhackhongservice.model.BaiHat;
+import com.example.appnghenhackhongservice.model.Song;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,10 +15,10 @@ import wseemann.media.FFmpegMediaMetadataRetriever;
 public class ParserJSON
 {
     public static Context context;
-    public static ArrayList<BaiHat> getListSong(Context context, String data)
+    public static ArrayList<Song> getListSong(Context context, String data)
     {
         ParserJSON.context = context;
-        ArrayList<BaiHat> listSong = new ArrayList<>();
+        ArrayList<Song> listSong = new ArrayList<>();
         try
         {
             JSONObject jData = new JSONObject(data);
@@ -27,16 +27,16 @@ public class ParserJSON
             for(int i = 0; i < length; ++i)
             {
                 JSONObject jSong = jListSong.getJSONObject(i);
-                final BaiHat baiHat = new BaiHat();
-                baiHat.setTenBaiHat(jSong.getString("name"));
-                baiHat.setData(jSong.getString("src"));
-                baiHat.setVitri(jSong.getInt("position"));
+                final Song song = new Song();
+                song.setSongName(jSong.getString("name"));
+                song.setData(jSong.getString("src"));
+                song.setPosition(jSong.getInt("position"));
                 FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
                 mmr.setDataSource(jSong.getString("src"));
                 long duration = Long.parseLong(mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION));
                 mmr.release();
-                baiHat.setThoiGian(duration);
-                listSong.add(baiHat);
+                song.setTime(duration);
+                listSong.add(song);
                 //Log.d("Song ", song.toString());
             }
             Collections.sort(listSong);

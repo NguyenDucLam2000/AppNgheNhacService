@@ -10,7 +10,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnNgheNhacOffline"
+        android:id="@+id/btnListenToMusicOffline"
         android:textAllCaps="false"
         android:text="@string/btnOffline"
         android:layout_width="wrap_content"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnNgheNhacOnline"
+        android:id="@+id/btnListenToMusicOnline"
         android:textAllCaps="false"
         android:text="@string/btnOnline"
         android:layout_width="wrap_content"

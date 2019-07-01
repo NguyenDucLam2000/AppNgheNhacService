@@ -8,7 +8,7 @@
     tools:context=".PlaySongActivity">
 
     <TextView
-        android:id="@+id/txtTenBaiHat"
+        android:id="@+id/txtSongName"
         android:textStyle="bold"
         android:gravity="center_horizontal"
         android:textSize="18dp"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content" />
 
         <SeekBar
-            android:id="@+id/sbBaiHat"
+            android:id="@+id/sbSong"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

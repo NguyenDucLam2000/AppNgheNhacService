@@ -3,14 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     android:layout_height="match_parent"
-    tools:context=".ListenToMusicOnlineActivity">
+    tools:context=".ListenMusicOnlineActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvListSongs"
+    <EditText
+        android:layout_marginTop="50dp"
+        android:id="@+id/edtLinkAPI"
+        android:hint="Link API"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content" />
 
-    </android.support.v7.widget.RecyclerView>
+    <Button
+        android:id="@+id/btnGo"
+        android:text="go"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ProgressBar
+        android:id="@+id/pgLoad"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp"
+        android:indeterminate="true" />
 
 </LinearLayout>
+

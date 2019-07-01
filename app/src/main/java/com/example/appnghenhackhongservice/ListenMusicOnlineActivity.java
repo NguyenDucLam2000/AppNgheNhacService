@@ -7,68 +7,59 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.example.appnghenhackhongservice.loaddata.LoadListSongFromAPI;
+import com.example.appnghenhackhongservice.data.LoadListSongFromAPI;
+import com.example.appnghenhackhongservice.intenet.Connectivity;
 
-public class ListenMusicOnlineActivity extends AppCompatActivity
-{
+public class ListenMusicOnlineActivity extends AppCompatActivity {
     Button btnGo;
     EditText edtLinkAPI;
     LoadListSongFromAPI loadListSongFromAPI;
-    ProgressBar pgLoad;
     public static final String DATA = "Data";
+    ProgressBar pgLoad;
 
-    public void addControls()
-    {
+    public void addControls() {
         btnGo = findViewById(R.id.btnGo);
-        edtLinkAPI = findViewById(R.id.edtLinkAPI);
         pgLoad = findViewById(R.id.pgLoad);
         pgLoad.setVisibility(View.INVISIBLE);
+        edtLinkAPI = findViewById(R.id.edtLinkAPI);
         edtLinkAPI.setText("http://ecomobileapp.com/static/music.json");
     }
 
-    public void addEvents()
-    {
-        btnGo.setOnClickListener(new View.OnClickListener()
-        {
+    public void addEvents() {
+        btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                //Toast.makeText(getApplicationContext(), "Click", Toast.LENGTH_LONG).show();
-                //Log.e("A", "1");
-                if (!edtLinkAPI.getText().toString().isEmpty())
-                {
-                    //Log.e("A", "2");
-                    //Toast.makeText(getApplicationContext(), "Click", Toast.LENGTH_LONG).show();
-                    pgLoad.setVisibility(View.VISIBLE);
-                    loadListSongFromAPI = new LoadListSongFromAPI(edtLinkAPI.getText().toString());
-                    loadListSongFromAPI.execute();
-                    try
-                    {
-                        //Log.e("A", "3");
-                        String data = loadListSongFromAPI.get();
-                        //Toast.makeText(getApplicationContext(), data, Toast.LENGTH_LONG).show();
-                        if(data != null)
-                        {
-                            Intent intent = new Intent(ListenMusicOnlineActivity.this, ListenToMusicOnlineActivity.class);
-                            intent.putExtra(DATA, data);
-                            startActivity(intent);
+            public void onClick(View v) {
+                if (Connectivity.isConnected(ListenMusicOnlineActivity.this)) {
+                    if (!edtLinkAPI.getText().toString().isEmpty()) {
+                        pgLoad.setVisibility(View.VISIBLE);
+                        loadListSongFromAPI = new LoadListSongFromAPI(ListenMusicOnlineActivity.this, edtLinkAPI.getText().toString());
+                        loadListSongFromAPI.execute();
+                        try {
+                            String data = loadListSongFromAPI.get();
+                            if (data != null) {
+                                Intent intent = new Intent(ListenMusicOnlineActivity.this, NavigationListenMucsicOnlineActivity.class);
+                                intent.putExtra(DATA, data);
+                                startActivity(intent);
+                            }
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Mạng không khả dụng ", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nghe_nhac_online);
+        setContentView(R.layout.activity_listen_to_music_online);
         addControls();
         addEvents();
     }

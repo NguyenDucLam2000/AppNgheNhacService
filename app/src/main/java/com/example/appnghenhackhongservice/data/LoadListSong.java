@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.loaddata;
+package com.example.appnghenhackhongservice.data;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -7,11 +7,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 
-import com.example.appnghenhackhongservice.model.BaiHat;
+import com.example.appnghenhackhongservice.model.Song;
 
 import java.util.ArrayList;
 
-public class LoadListSong extends AsyncTask<Void, Void, ArrayList<BaiHat>>
+public class LoadListSong extends AsyncTask<Void, Void, ArrayList<Song>>
 {
     private Context context;
     private ContentResolver musicResolver;
@@ -34,9 +34,9 @@ public class LoadListSong extends AsyncTask<Void, Void, ArrayList<BaiHat>>
     }
 
     @Override
-    protected ArrayList<BaiHat> doInBackground(Void... voids)
+    protected ArrayList<Song> doInBackground(Void... voids)
     {
-        ArrayList<BaiHat> listBaiHat = new ArrayList<>();
+        ArrayList<Song> listSong = new ArrayList<>();
         musicResolver = context.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         //Uri uri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI;
@@ -45,23 +45,23 @@ public class LoadListSong extends AsyncTask<Void, Void, ArrayList<BaiHat>>
         {
             while (cursor.moveToNext())
             {
-                String hinh = null;
-                long thoigian = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
-                String tenCaSi = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                String tenBaiHat = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                String image = null;
+                long time = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                String singerName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                String songName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
                 String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                 //String hinh = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
-                BaiHat baiHat = new BaiHat(hinh , thoigian, tenCaSi, tenBaiHat, data);
-                listBaiHat.add(baiHat);
+                Song song = new Song(image , time, singerName, songName, data);
+                listSong.add(song);
             }
         }
-        return listBaiHat;
+        return listSong;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<BaiHat> baiHats)
+    protected void onPostExecute(ArrayList<Song> songs)
     {
-        super.onPostExecute(baiHats);
-        listSong.getListSong(baiHats);
+        super.onPostExecute(songs);
+        listSong.getListSong(songs);
     }
 }

@@ -1,5 +1,6 @@
-package com.example.appnghenhackhongservice.loaddata;
+package com.example.appnghenhackhongservice.data;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -11,6 +12,7 @@ import java.net.URL;
 
 public class LoadListSongFromAPI extends AsyncTask<Void, Void, String>
 {
+    private ProgressDialog progressDialog;
     private Context context;
     private String linkAPI;
     public static String REQUEST_METHOD = "GET";
@@ -38,15 +40,26 @@ public class LoadListSongFromAPI extends AsyncTask<Void, Void, String>
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+/*        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Thông báo");
+        progressDialog.setMessage("Đang tải dữ liệu, vui lòng chờ");
+        //progressDialog.setIndeterminate(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();*/
+    }
+
+    @Override
     protected String doInBackground(Void... voids)
     {
         try
         {
             URL url = new URL(linkAPI);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            //httpURLConnection.connect();
+            httpURLConnection.connect();
             //httpURLConnection.setRequestMethod(REQUEST_METHOD);
-            httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            //httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             String line = null;
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -54,7 +67,7 @@ public class LoadListSongFromAPI extends AsyncTask<Void, Void, String>
             {
                 builder.append(line);
             }
-            inputStream.close();
+            //inputStream.close();
             return builder.toString();
         }
         catch (Exception e)
@@ -64,4 +77,19 @@ public class LoadListSongFromAPI extends AsyncTask<Void, Void, String>
         return null;
     }
 
+/*
+    @Override
+    protected void onProgressUpdate(Void... values) {
+        super.onProgressUpdate(values);
+    }
+*/
+
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+/*        if(progressDialog != null){
+            //progressDialog.cancel();
+            progressDialog.dismiss();
+        }*/
+    }
 }
