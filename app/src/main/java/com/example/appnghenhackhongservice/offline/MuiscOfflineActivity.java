@@ -103,21 +103,9 @@ public class MuiscOfflineActivity extends AppCompatActivity implements ListSong,
         intent.putParcelableArrayListExtra(LIST_SONG, (ArrayList<? extends Parcelable>) listSong);
         intent.putExtra(POSITION, position);
         intent.putExtra(TYPE, true);
-        //startActivityForResult(intent,1);
         startActivity(intent);
     }
 
-/*    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode==1&&resultCode==RESULT_OK){
-            if(data!=null){
-//                Gson gson = new Gson();
-//                mJsonMusicservice = data.getStringExtra("musicservice");
-//                serviceConnection = gson.fromJson(mJsonMusicservice,MusicPlayer.class);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }*/
     @Override
     public void onStart() {
         super.onStart();

@@ -14,6 +14,7 @@ import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.offline.OfflineScreenView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
@@ -62,9 +63,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             viewHolder.txtSingerName.setText("None");
         }
         viewHolder.txtSongName.setText(listSong.get(i).getSongName());
-        //Log.d("Name", listSong.get(i).getTenBaiHat());
-        long time = listSong.get(i).gettime() / 1000;
-        viewHolder.txtSongDuration.setText((time / 60) + ":" + (time % 60 <= 9 ? ("0" + time % 60) : time % 60));
+        viewHolder.txtSongDuration.setText(new SimpleDateFormat("mm:ss").format(listSong.get(i).gettime()));
     }
 
     @Override

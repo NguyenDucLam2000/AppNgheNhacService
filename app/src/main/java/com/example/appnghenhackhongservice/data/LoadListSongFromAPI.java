@@ -10,53 +10,44 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class LoadListSongFromAPI extends AsyncTask<Void, Void, String>
-{
+public class LoadListSongFromAPI extends AsyncTask<Void, Void, String> {
     private ProgressDialog progressDialog;
     private Context context;
     private String linkAPI;
     private StringBuilder builder = new StringBuilder();
 
-    public LoadListSongFromAPI(Context context, String linkAPI)
-    {
+    public LoadListSongFromAPI(Context context, String linkAPI) {
         this.context = context;
         this.linkAPI = linkAPI;
     }
 
-    public LoadListSongFromAPI(String linkAPI)
-    {
+    public LoadListSongFromAPI(String linkAPI) {
         this.linkAPI = linkAPI;
     }
 
-    public String getLinkAPI()
-    {
+    public String getLinkAPI() {
         return linkAPI;
     }
 
-    public void setLinkAPI(String linkAPI)
-    {
+    public void setLinkAPI(String linkAPI) {
         this.linkAPI = linkAPI;
     }
 
     @Override
-    protected String doInBackground(Void... voids)
-    {
-        try
-        {
+    protected String doInBackground(Void... voids) {
+        try {
             URL url = new URL(linkAPI);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.connect();
             String line = null;
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            while ((line = bufferedReader.readLine()) != null)
-            {
+            while ((line = bufferedReader.readLine()) != null) {
                 builder.append(line);
             }
             return builder.toString();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;

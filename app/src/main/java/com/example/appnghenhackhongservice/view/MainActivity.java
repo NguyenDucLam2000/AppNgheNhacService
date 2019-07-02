@@ -10,26 +10,22 @@ import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.offline.MuiscOfflineActivity;
 import com.example.appnghenhackhongservice.online.NavigationActivity;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener
-{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnListenToMusicOnline, btnListenToMusicOffline;
     Intent intent;
 
-    private void addControls()
-    {
+    private void addControls() {
         btnListenToMusicOffline = findViewById(R.id.btnListenToMusicOffline);
         btnListenToMusicOnline = findViewById(R.id.btnListenToMusicOnline);
     }
 
-    private void addEvents()
-    {
+    private void addEvents() {
         btnListenToMusicOnline.setOnClickListener(this);
         btnListenToMusicOffline.setOnClickListener(this);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         addControls();
@@ -37,10 +33,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View v)
-    {
-        switch (v.getId())
-        {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.btnListenToMusicOffline:
                 intent = new Intent(MainActivity.this, MuiscOfflineActivity.class);
                 startActivity(intent);

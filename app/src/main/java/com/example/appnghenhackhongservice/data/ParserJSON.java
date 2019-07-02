@@ -12,20 +12,17 @@ import java.util.Collections;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
-public class ParserJSON
-{
+public class ParserJSON {
     public static Context context;
-    public static ArrayList<Song> getListSong(Context context, String data)
-    {
+
+    public static ArrayList<Song> getListSong(Context context, String data) {
         ParserJSON.context = context;
         ArrayList<Song> listSong = new ArrayList<>();
-        try
-        {
+        try {
             JSONObject jData = new JSONObject(data);
             JSONArray jListSong = jData.getJSONArray("results");
             int length = jListSong.length();
-            for(int i = 0; i < length; ++i)
-            {
+            for (int i = 0; i < length; ++i) {
                 JSONObject jSong = jListSong.getJSONObject(i);
                 final Song song = new Song();
                 song.setSongName(jSong.getString("name"));
@@ -41,8 +38,7 @@ public class ParserJSON
             Collections.sort(listSong);
             return listSong;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;

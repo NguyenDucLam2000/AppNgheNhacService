@@ -3,16 +3,14 @@ package com.example.appnghenhackhongservice.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Song implements Parcelable, Comparable<Song>
-{
+public class Song implements Parcelable, Comparable<Song> {
     private String image;
     private long time;
     private int position;
     private String singerName, songName, data;
 
 
-    public Song(int position, String image, long time, String singerName, String songName, String data)
-    {
+    public Song(int position, String image, long time, String singerName, String songName, String data) {
         this.image = image;
         this.time = time;
         this.singerName = singerName;
@@ -21,8 +19,7 @@ public class Song implements Parcelable, Comparable<Song>
         this.position = position;
     }
 
-    public Song(String image, long time, String singerName, String songName, String data)
-    {
+    public Song(String image, long time, String singerName, String songName, String data) {
         this.image = image;
         this.time = time;
         this.singerName = singerName;
@@ -30,32 +27,26 @@ public class Song implements Parcelable, Comparable<Song>
         this.data = data;
     }
 
-    public String getData()
-    {
+    public String getData() {
         return data;
     }
 
-    public void setData(String data)
-    {
+    public void setData(String data) {
         this.data = data;
     }
-    
-    public int getPosition()
-    {
+
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(int position)
-    {
+    public void setPosition(int position) {
         this.position = position;
     }
 
-    public Song()
-    {
+    public Song() {
     }
 
-    protected Song(Parcel in)
-    {
+    protected Song(Parcel in) {
         image = in.readString();
         time = in.readLong();
         singerName = in.readString();
@@ -64,70 +55,57 @@ public class Song implements Parcelable, Comparable<Song>
         position = in.readInt();
     }
 
-    public static final Creator<Song> CREATOR = new Creator<Song>()
-    {
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
         @Override
-        public Song createFromParcel(Parcel in)
-        {
+        public Song createFromParcel(Parcel in) {
             return new Song(in);
         }
 
         @Override
-        public Song[] newArray(int size)
-        {
+        public Song[] newArray(int size) {
             return new Song[size];
         }
     };
 
-    public String getImage()
-    {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(String image)
-    {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public long gettime()
-    {
+    public long gettime() {
         return time;
     }
 
-    public void setTime(long time)
-    {
+    public void setTime(long time) {
         this.time = time;
     }
 
-    public String getSingerName()
-    {
+    public String getSingerName() {
         return singerName;
     }
 
-    public void setSingerName(String singerName)
-    {
+    public void setSingerName(String singerName) {
         this.singerName = singerName;
     }
 
-    public String getSongName()
-    {
+    public String getSongName() {
         return songName;
     }
 
-    public void setSongName(String songName)
-    {
+    public void setSongName(String songName) {
         this.songName = songName;
     }
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags)
-    {
+    public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(image);
         dest.writeLong(time);
         dest.writeString(singerName);
@@ -137,14 +115,11 @@ public class Song implements Parcelable, Comparable<Song>
     }
 
     @Override
-    public int compareTo(Song o)
-    {
-        if(this.position == o.position)
-        {
+    public int compareTo(Song o) {
+        if (this.position == o.position) {
             return 0;
         }
-        else if(this.position > o.position)
-        {
+        else if (this.position > o.position) {
             return 1;
         }
         return -1;
