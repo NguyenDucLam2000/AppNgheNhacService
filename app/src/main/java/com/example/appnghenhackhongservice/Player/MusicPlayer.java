@@ -205,7 +205,6 @@ public class MusicPlayer implements MediaPlayer.OnCompletionListener {
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        //next();
         autoNext.onAutoNext();
     }
 }

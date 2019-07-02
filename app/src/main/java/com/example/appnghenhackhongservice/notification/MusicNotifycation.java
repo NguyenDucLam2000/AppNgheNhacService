@@ -15,7 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
-import com.example.appnghenhackhongservice.PlaySongActivity;
+import com.example.appnghenhackhongservice.view.PlayActivity;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.service.MusicService;
@@ -83,14 +83,11 @@ public class MusicNotifycation {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel();
         }
-        Intent openPlayerIntent = new Intent(mMusicService, PlaySongActivity.class);
+        Intent openPlayerIntent = new Intent(mMusicService, PlayActivity.class);
         openPlayerIntent.putExtra(SONG_SELECTED, song);
         openPlayerIntent.putParcelableArrayListExtra(LIST_SONG, (ArrayList<? extends Parcelable>) listSong);
         openPlayerIntent.putExtra(POSITION, mMusicService.getmMusicPlayer().getPosition());
-        openPlayerIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        //openPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        //openPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        //PendingIntent contentIntent = PendingIntent.getActivity(mMusicService, REQUEST_CODE, openPlayerIntent, 0);
+        openPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(mMusicService, REQUEST_CODE, openPlayerIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         String artist = song.getSingerName();
         String songTitle = song.getSongName();

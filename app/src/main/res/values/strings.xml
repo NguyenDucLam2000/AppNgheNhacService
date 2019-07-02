@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">App Music</string>
-    <string name="btnOffline">Listen Offline</string>
-    <string name="btnOnline">Listten Online</string>
+    <string name="btn_offline">Listen Offline</string>
+    <string name="btn_online">Listten Online</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice;
+package com.example.appnghenhackhongservice.view;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -16,16 +16,19 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.appnghenhackhongservice.Player.AutoNext;
+import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.notification.MusicNotifycation;
 import com.example.appnghenhackhongservice.recevier.UpdateUI;
 import com.example.appnghenhackhongservice.service.MusicService;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class PlaySongActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, UpdateUI, AutoNext {
+public class PlayActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, UpdateUI, AutoNext {
     TextView txtPlayTime, txtSongName;
     ImageView imgPlayorPause, imgNext, imgPrev;
     SeekBar sbSong;
@@ -54,7 +57,6 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
                     txtPlayTime.setText((new SimpleDateFormat("mm:ss")).format(mCurrentPosition) + "/" + (new SimpleDateFormat("mm:ss")).format(duration));
                 }
                 mHandler.post(this);
-
             }
         });
     }
@@ -74,9 +76,9 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
                     musicService.getmMusicPlayer().startMusic();
                 }
                 musicService.getmMusicPlayer().showNotification();
-                musicService.getmMusicPlayer().setAutoNext(PlaySongActivity.this);
-                musicService.getmMusicPlayer().getReceiver().setUpdateUI(PlaySongActivity.this);
-                startMusic();
+                musicService.getmMusicPlayer().setAutoNext(PlayActivity.this);
+                musicService.getmMusicPlayer().getReceiver().setUpdateUI(PlayActivity.this);
+                initUI();
                 runOnUiThread();
             }
         }
@@ -92,7 +94,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_playsong);
+        setContentView(R.layout.activity_play);
         doBindServie();
         addControls();
         addEvents();
@@ -107,7 +109,6 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
     public void doBindServie() {
         typeListSong = getIntent().getBooleanExtra(MusicAdapter.TYPE, false);
         if (typeListSong) { // getIntent from Adapter
-            //song = getIntent().getParcelableExtra(MusicAdapter.BAIHAT);
             listSong = getIntent().getParcelableArrayListExtra(MusicAdapter.LIST_SONG);
             position = getIntent().getIntExtra(MusicAdapter.POSITION, -1);
 
@@ -118,9 +119,6 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         }
         bindService(new Intent(getApplicationContext(), MusicService.class), serviceConnection, Context.BIND_AUTO_CREATE);
         intent = new Intent(getApplicationContext(), MusicService.class);
-/*        if (typeListSong) {
-
-        }*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent);
         }
@@ -138,10 +136,8 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
         sbSong = findViewById(R.id.sbSong);
     }
 
-    private void startMusic() {
-        // Khởi động BoundService, nhận vào 3 tham số, intent, serviceconection, flag
-        // BIND_AUTO_CREATE sẽ start nếu service chưa được khởi tạo, nếu đã tạo rồi sẽ k start nữa
-        if(musicService.getmMusicPlayer().isPlaying()){
+    private void initUI() {
+        if (musicService.getmMusicPlayer().isPlaying()) {
             imgPlayorPause.setImageResource(R.drawable.pause);
         }
         else {
@@ -187,7 +183,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
                 if (change) {
                     musicService.getmMusicPlayer().next();
                 }
-                startMusic();
+                initUI();
                 change = true;
             }
         }
@@ -204,7 +200,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
             if (change) {
                 musicService.getmMusicPlayer().prev();
             }
-            startMusic();
+            initUI();
             change = true;
         }
     }
@@ -236,7 +232,7 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        musicService.getmMusicPlayer().getmMediaPlayer().seekTo(seekBar.getProgress());
+        musicService.getmMusicPlayer().seekTo(seekBar.getProgress());
     }
 
     @Override
@@ -250,13 +246,20 @@ public class PlaySongActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        backtoOfflineScreen();
 /*        if (isBound) {
             musicService.getmMusicPlayer().release();
             unbindService(serviceConnection);
             isBound = false;
             stopService(intent);
         }*/
+    }
+
+    private void backtoOfflineScreen() {
+        if (musicService != null && musicService.getmMusicPlayer() != null) {
+            EventBus.getDefault().postSticky(musicService.getmMusicPlayer());
+            finish();
+        }
     }
 
     @Override

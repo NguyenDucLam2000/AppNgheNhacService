@@ -1,7 +1,6 @@
 package com.example.appnghenhackhongservice.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -20,18 +19,11 @@ import java.util.List;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
     private List<Song> listSong;
     private Context context;
-    Intent intent;
-    public static final String BAIHAT = "Song";
     public static final String LIST_SONG = "ListBaiHat";
     public static final String POSITION = "Position";
     public static final String DURATION = "Duration";
     public static final String TYPE = "Type";
-    private boolean isSend = false;
     private OfflineScreenView offlineScreenView;
-
-    public MusicAdapter() {
-
-    }
 
     public MusicAdapter(Context context, List<Song> listSong, OfflineScreenView offlineScreenView) {
         this.context = context;
@@ -51,7 +43,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view = inflater.inflate(R.layout.recycleview_item, viewGroup, false);
+        View view = inflater.inflate(R.layout.item, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -95,7 +87,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
         @Override
         public void onClick(View v) {
-            //Toast.makeText(context, listSong.get(getAdapterPosition()).getThoiGian() + "", Toast.LENGTH_LONG).show();
             if (offlineScreenView != null) {
                 offlineScreenView.songclick(getAdapterPosition());
             }

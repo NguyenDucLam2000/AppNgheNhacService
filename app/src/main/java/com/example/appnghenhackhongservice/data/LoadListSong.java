@@ -50,7 +50,7 @@ public class LoadListSong extends AsyncTask<Void, Void, ArrayList<Song>>
                 String singerName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 String songName = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
                 String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                //String hinh = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                //String image = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                 Song song = new Song(image , time, singerName, songName, data);
                 listSong.add(song);
             }

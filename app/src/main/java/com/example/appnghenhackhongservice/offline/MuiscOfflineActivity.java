@@ -12,13 +12,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
-import com.example.appnghenhackhongservice.PlaySongActivity;
+import com.example.appnghenhackhongservice.Player.MusicPlayer;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.data.ListSong;
 import com.example.appnghenhackhongservice.data.LoadListSong;
 import com.example.appnghenhackhongservice.model.Song;
-import com.example.appnghenhackhongservice.service.MusicService;
+import com.example.appnghenhackhongservice.view.PlayActivity;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,22 +30,20 @@ import java.util.List;
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.LIST_SONG;
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.POSITION;
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.TYPE;
+/*import static com.example.appnghenhackhongservice.service.MusicService.mMusicPlayer;*/
 
-public class ListenMuiscOfflineActivity extends AppCompatActivity implements ListSong,OfflineScreenView {
-    List<Song> listSong;
-    MusicAdapter musicAdapter;
-    RecyclerView rvListSongs;
-    RecyclerView.LayoutManager layoutManager;
-    LoadListSong loadListSong;
-    private MusicService musicService;
-    private MusicService.BindService bindService;
+public class MuiscOfflineActivity extends AppCompatActivity implements ListSong, OfflineScreenView {
+    private List<Song> listSong;
+    private MusicAdapter musicAdapter;
+    private RecyclerView rvListSongs;
+    private RecyclerView.LayoutManager layoutManager;
+    private LoadListSong loadListSong;
+    private MusicPlayer musicPlayer;
     private void addControls() {
         rvListSongs = findViewById(R.id.rvListSongs);
-        //layoutManager = new LinearLayoutManager(ListenMuiscOfflineActivity.this);
-        layoutManager = new LinearLayoutManager(ListenMuiscOfflineActivity.this, LinearLayoutManager.VERTICAL, false);
+        layoutManager = new LinearLayoutManager(MuiscOfflineActivity.this, LinearLayoutManager.VERTICAL, false);
         rvListSongs.setLayoutManager(layoutManager);
         musicAdapter = new MusicAdapter(getApplicationContext(), listSong,this);
-        //Log.d("Adapter Size ", musicAdapter.getItemCount() + "");
         rvListSongs.setAdapter(musicAdapter);
     }
 
@@ -79,7 +81,7 @@ public class ListenMuiscOfflineActivity extends AppCompatActivity implements Lis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listen_to_music_offline);
+        setContentView(R.layout.activity_listen_offline);
         requestRead();
     }
 
@@ -93,16 +95,43 @@ public class ListenMuiscOfflineActivity extends AppCompatActivity implements Lis
 
     @Override
     public void songclick(int position) {
-        Intent intent = new Intent(this, PlaySongActivity.class);
+        if(musicPlayer!=null){
+            musicPlayer.release();
+        }
+        Intent intent = new Intent(this, PlayActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putParcelableArrayListExtra(LIST_SONG, (ArrayList<? extends Parcelable>) listSong);
         intent.putExtra(POSITION, position);
         intent.putExtra(TYPE, true);
-        //intent.putExtra(BAIHAT, listSong.get(getAdapterPosition()));
-        //Toast.makeText(context, listSong.get(getAdapterPosition()).getTenBaiHat(), Toast.LENGTH_LONG).show();
-        //intent.putExtra(DURATION, listSong.get(getAdapterPosition()).getThoiGian());
-        //Log.d("Position", getAdapterPosition() + "");
-        //Log.d("baiHat", listSong.get(getAdapterPosition()).getTenBaiHat());
+        //startActivityForResult(intent,1);
         startActivity(intent);
     }
+
+/*    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode==1&&resultCode==RESULT_OK){
+            if(data!=null){
+//                Gson gson = new Gson();
+//                mJsonMusicservice = data.getStringExtra("musicservice");
+//                serviceConnection = gson.fromJson(mJsonMusicservice,MusicPlayer.class);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }*/
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void onMusicEvent(MusicPlayer musicPlayer) {
+        this.musicPlayer = musicPlayer;
+    };
 }

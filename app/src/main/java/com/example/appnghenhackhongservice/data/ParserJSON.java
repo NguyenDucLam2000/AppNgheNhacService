@@ -37,7 +37,6 @@ public class ParserJSON
                 mmr.release();
                 song.setTime(duration);
                 listSong.add(song);
-                //Log.d("Song ", song.toString());
             }
             Collections.sort(listSong);
             return listSong;
