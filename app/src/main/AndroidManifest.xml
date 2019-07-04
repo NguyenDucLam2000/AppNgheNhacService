@@ -14,10 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.online.MucsicOnlineActivity"></activity>
+        <activity android:name=".view.online.listmusic.MucsicOnlineActivity"></activity>
         <activity android:name=".view.play.PlayActivity" />
         <activity android:name=".view.offline.MuiscOfflineActivity" />
-        <activity android:name=".view.online.NavigationActivity" />
+        <activity android:name=".view.online.navigation.NavigationActivity" />
         <activity android:name=".view.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

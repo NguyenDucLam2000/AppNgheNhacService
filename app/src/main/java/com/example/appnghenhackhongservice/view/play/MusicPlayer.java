@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.presenter.player;
+package com.example.appnghenhackhongservice.view.play;
 
 import android.content.Context;
 import android.content.IntentFilter;
@@ -6,7 +6,7 @@ import android.media.MediaPlayer;
 
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.notification.MusicNotifycation;
-import com.example.appnghenhackhongservice.presenter.receiver.NotificationReceiver;
+import com.example.appnghenhackhongservice.receiver.NotificationReceiver;
 import com.example.appnghenhackhongservice.service.MusicService;
 
 import java.util.List;

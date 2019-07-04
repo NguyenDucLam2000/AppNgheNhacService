@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.view.online;
+package com.example.appnghenhackhongservice.view.online.navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.appnghenhackhongservice.R;
-import com.example.appnghenhackhongservice.presenter.MusicOnlinePresenter;
-import com.example.appnghenhackhongservice.presenter.ResultHander;
+import com.example.appnghenhackhongservice.view.online.listmusic.MusicOnlinePresenter;
+import com.example.appnghenhackhongservice.view.online.listmusic.MucsicOnlineActivity;
 
 public class NavigationActivity extends AppCompatActivity implements ResultHander {
     private Button btnGo;

@@ -15,12 +15,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.appnghenhackhongservice.presenter.player.AutoNext;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.notification.MusicNotifycation;
-import com.example.appnghenhackhongservice.presenter.receiver.UpdateUI;
+import com.example.appnghenhackhongservice.receiver.NotifyListener;
 import com.example.appnghenhackhongservice.service.MusicService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -28,20 +27,19 @@ import org.greenrobot.eventbus.EventBus;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class PlayActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, UpdateUI, AutoNext {
-    TextView txtPlayTime, txtSongName;
-    ImageView imgPlayorPause, imgNext, imgPrev;
-    SeekBar sbSong;
-    Song song;
-    List<Song> listSong;
-    int position;
-    int duration;
+public class PlayActivity extends AppCompatActivity implements View.OnClickListener, SeekBar.OnSeekBarChangeListener, NotifyListener, AutoNext {
+    private TextView txtPlayTime, txtSongName;
+    private ImageView imgPlayorPause, imgNext, imgPrev;
+    private SeekBar sbSong;
+    private Song song;
+    private List<Song> listSong;
+    private int position;
+    private int duration;
     private int mCurrentPosition;
-    Intent intent;
+    private Intent intent;
     private MusicService musicService;
     boolean isBound = false;
-    MusicService.BindService bindService;
-    MusicNotifycation mMusicNotifycation;
+    private MusicService.BindService bindService;
     private Handler mHandler;
     private boolean change = true;
     public static boolean typeListSong = false;
@@ -66,7 +64,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         public void onServiceConnected(ComponentName name, IBinder service) {
             bindService = (MusicService.BindService) service;
             musicService = bindService.getService();
-            mMusicNotifycation = musicService.getmMusicNotifycation();
             isBound = true;
             musicService.getmMusicPlayer().setListSong(listSong);
             musicService.getmMusicPlayer().setSong(song);
@@ -247,12 +244,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         backtoOfflineScreen();
-/*        if (isBound) {
-            musicService.getmMusicPlayer().release();
-            unbindService(serviceConnection);
-            isBound = false;
-            stopService(intent);
-        }*/
     }
 
     private void backtoOfflineScreen() {

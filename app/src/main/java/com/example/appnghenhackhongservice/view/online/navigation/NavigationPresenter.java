@@ -1,8 +1,10 @@
-package com.example.appnghenhackhongservice.presenter;
+package com.example.appnghenhackhongservice.view.online.navigation;
 
-public class PlayPresenter {
-    ResultPlay resultPlay;
-    public PlayPresenter(ResultPlay resultPlay){
+import com.example.appnghenhackhongservice.view.online.listmusic.ResultHander;
+
+public class NavigationPresenter {
+    ResultHander resultPlay;
+    public NavigationPresenter(ResultHander resultPlay){
         this.resultPlay = resultPlay;
     }
     public void hander(int position, int size){

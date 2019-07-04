@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.example.appnghenhackhongservice.presenter.player.MusicPlayer;
+import com.example.appnghenhackhongservice.view.play.MusicPlayer;
 import com.example.appnghenhackhongservice.notification.MusicNotifycation;
 
 public class MusicService extends Service {

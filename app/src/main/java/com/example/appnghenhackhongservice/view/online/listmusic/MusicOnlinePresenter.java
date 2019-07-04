@@ -1,9 +1,10 @@
-package com.example.appnghenhackhongservice.presenter;
+package com.example.appnghenhackhongservice.view.online.listmusic;
 
 import android.content.Context;
 
 import com.example.appnghenhackhongservice.intenet.Connectivity;
 import com.example.appnghenhackhongservice.model.LoadListSongFromAPI;
+import com.example.appnghenhackhongservice.view.online.navigation.ResultHander;
 
 public class MusicOnlinePresenter {
     private ResultHander resultHander;

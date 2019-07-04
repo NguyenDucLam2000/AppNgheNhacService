@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.view.online;
+package com.example.appnghenhackhongservice.view.online.listmusic;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.ParserJSON;
 import com.example.appnghenhackhongservice.model.Song;
-import com.example.appnghenhackhongservice.presenter.PlayPresenter;
-import com.example.appnghenhackhongservice.presenter.ResultPlay;
-import com.example.appnghenhackhongservice.presenter.player.MusicPlayer;
+import com.example.appnghenhackhongservice.view.online.navigation.NavigationActivity;
+import com.example.appnghenhackhongservice.view.online.navigation.NavigationPresenter;
+import com.example.appnghenhackhongservice.view.play.MusicPlayer;
 import com.example.appnghenhackhongservice.view.offline.OfflineScreenView;
 import com.example.appnghenhackhongservice.view.play.PlayActivity;
 
@@ -29,13 +29,13 @@ import static com.example.appnghenhackhongservice.adapter.MusicAdapter.LIST_SONG
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.POSITION;
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.TYPE;
 
-public class MucsicOnlineActivity extends AppCompatActivity implements OfflineScreenView, ResultPlay {
+public class MucsicOnlineActivity extends AppCompatActivity implements OfflineScreenView, ResultHander {
     RecyclerView rvListSongs;
     private MusicAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     private List<Song> listSong;
     private MusicPlayer musicPlayer;
-    private PlayPresenter playPresenter;
+    private NavigationPresenter playPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class MucsicOnlineActivity extends AppCompatActivity implements OfflineSc
         layoutManager = new LinearLayoutManager(this);
         rvListSongs.setLayoutManager(layoutManager);
         rvListSongs.setAdapter(adapter);
-        playPresenter = new PlayPresenter(this);
+        playPresenter = new NavigationPresenter(this);
     }
 
     @Override

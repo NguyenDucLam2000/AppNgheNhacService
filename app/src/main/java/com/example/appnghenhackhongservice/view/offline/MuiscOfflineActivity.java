@@ -17,7 +17,7 @@ import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.ListSong;
 import com.example.appnghenhackhongservice.model.LoadListSong;
 import com.example.appnghenhackhongservice.model.Song;
-import com.example.appnghenhackhongservice.presenter.player.MusicPlayer;
+import com.example.appnghenhackhongservice.view.play.MusicPlayer;
 import com.example.appnghenhackhongservice.view.play.PlayActivity;
 
 import org.greenrobot.eventbus.EventBus;
