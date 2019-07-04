@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.appnghenhackhongservice.R;
-import com.example.appnghenhackhongservice.data.LoadListSongFromAPI;
+import com.example.appnghenhackhongservice.model.LoadListSongFromAPI;
 import com.example.appnghenhackhongservice.intenet.Connectivity;
 
 public class NavigationActivity extends AppCompatActivity {
@@ -28,6 +28,12 @@ public class NavigationActivity extends AppCompatActivity {
         addEvents();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        pgLoad.setVisibility(View.INVISIBLE);
+    }
+
     public void addControls() {
         btnGo = findViewById(R.id.btnGo);
         pgLoad = findViewById(R.id.pgLoad);
@@ -36,7 +42,6 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
     public void addEvents() {
-        pgLoad.setVisibility(View.INVISIBLE);
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,4 +69,5 @@ public class NavigationActivity extends AppCompatActivity {
             }
         });
     }
+
 }

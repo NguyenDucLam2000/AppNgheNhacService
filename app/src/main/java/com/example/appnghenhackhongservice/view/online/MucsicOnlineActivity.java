@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import com.example.appnghenhackhongservice.Player.MusicPlayer;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
-import com.example.appnghenhackhongservice.data.ParserJSON;
+import com.example.appnghenhackhongservice.model.ParserJSON;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.offline.OfflineScreenView;
 import com.example.appnghenhackhongservice.view.PlayActivity;
@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.LIST_SONG;
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.POSITION;
@@ -29,7 +30,7 @@ public class MucsicOnlineActivity extends AppCompatActivity implements OfflineSc
     RecyclerView rvListSongs;
     MusicAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<Song> listSong;
+    List<Song> listSong;
     private MusicPlayer musicPlayer;
 
     @Override
@@ -59,7 +60,7 @@ public class MucsicOnlineActivity extends AppCompatActivity implements OfflineSc
         intent.putParcelableArrayListExtra(LIST_SONG, (ArrayList<? extends Parcelable>) listSong);
         intent.putExtra(POSITION, position);
         intent.putExtra(TYPE, true);
-        startActivityForResult(intent, 1);
+        startActivity(intent);
     }
 
     @Override

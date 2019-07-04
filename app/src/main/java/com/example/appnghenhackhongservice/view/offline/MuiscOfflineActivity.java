@@ -15,8 +15,8 @@ import android.widget.Toast;
 import com.example.appnghenhackhongservice.Player.MusicPlayer;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
-import com.example.appnghenhackhongservice.data.ListSong;
-import com.example.appnghenhackhongservice.data.LoadListSong;
+import com.example.appnghenhackhongservice.model.ListSong;
+import com.example.appnghenhackhongservice.model.LoadListSong;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.view.PlayActivity;
 
@@ -39,11 +39,12 @@ public class MuiscOfflineActivity extends AppCompatActivity implements ListSong,
     private RecyclerView.LayoutManager layoutManager;
     private LoadListSong loadListSong;
     private MusicPlayer musicPlayer;
+
     private void addControls() {
         rvListSongs = findViewById(R.id.rvListSongs);
         layoutManager = new LinearLayoutManager(MuiscOfflineActivity.this, LinearLayoutManager.VERTICAL, false);
         rvListSongs.setLayoutManager(layoutManager);
-        musicAdapter = new MusicAdapter(getApplicationContext(), listSong,this);
+        musicAdapter = new MusicAdapter(getApplicationContext(), listSong, this);
         rvListSongs.setAdapter(musicAdapter);
     }
 
@@ -90,12 +91,11 @@ public class MuiscOfflineActivity extends AppCompatActivity implements ListSong,
         listSong = new ArrayList<>();
         listSong = listSongs;
         addControls();
-
     }
 
     @Override
     public void songclick(int position) {
-        if(musicPlayer!=null){
+        if (musicPlayer != null) {
             musicPlayer.release();
         }
         Intent intent = new Intent(this, PlayActivity.class);
@@ -118,8 +118,10 @@ public class MuiscOfflineActivity extends AppCompatActivity implements ListSong,
         EventBus.getDefault().unregister(this);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onMusicEvent(MusicPlayer musicPlayer) {
         this.musicPlayer = musicPlayer;
-    };
+    }
+
+    ;
 }

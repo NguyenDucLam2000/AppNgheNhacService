@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 
 import com.example.appnghenhackhongservice.model.Song;
+import com.example.appnghenhackhongservice.offline.OfflineScreenView;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class LoadListSong extends AsyncTask<Void, Void, ArrayList<Song>> {
     private ContentResolver musicResolver;
     private Cursor cursor;
     private ListSong listSong;
+    private OfflineScreenView offlineScreenView;
     private Song song;
 
     public ListSong getListSong() {
