@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.online;
+package com.example.appnghenhackhongservice.view.online;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,14 +6,17 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
-import com.example.appnghenhackhongservice.Player.MusicPlayer;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.ParserJSON;
 import com.example.appnghenhackhongservice.model.Song;
-import com.example.appnghenhackhongservice.offline.OfflineScreenView;
-import com.example.appnghenhackhongservice.view.PlayActivity;
+import com.example.appnghenhackhongservice.presenter.PlayPresenter;
+import com.example.appnghenhackhongservice.presenter.ResultPlay;
+import com.example.appnghenhackhongservice.presenter.player.MusicPlayer;
+import com.example.appnghenhackhongservice.view.offline.OfflineScreenView;
+import com.example.appnghenhackhongservice.view.play.PlayActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,12 +29,13 @@ import static com.example.appnghenhackhongservice.adapter.MusicAdapter.LIST_SONG
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.POSITION;
 import static com.example.appnghenhackhongservice.adapter.MusicAdapter.TYPE;
 
-public class MucsicOnlineActivity extends AppCompatActivity implements OfflineScreenView {
+public class MucsicOnlineActivity extends AppCompatActivity implements OfflineScreenView, ResultPlay {
     RecyclerView rvListSongs;
-    MusicAdapter adapter;
+    private MusicAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    List<Song> listSong;
+    private List<Song> listSong;
     private MusicPlayer musicPlayer;
+    private PlayPresenter playPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class MucsicOnlineActivity extends AppCompatActivity implements OfflineSc
         layoutManager = new LinearLayoutManager(this);
         rvListSongs.setLayoutManager(layoutManager);
         rvListSongs.setAdapter(adapter);
+        playPresenter = new PlayPresenter(this);
     }
 
     @Override
@@ -55,12 +60,7 @@ public class MucsicOnlineActivity extends AppCompatActivity implements OfflineSc
         if (musicPlayer != null) {
             musicPlayer.release();
         }
-        Intent intent = new Intent(this, PlayActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putParcelableArrayListExtra(LIST_SONG, (ArrayList<? extends Parcelable>) listSong);
-        intent.putExtra(POSITION, position);
-        intent.putExtra(TYPE, true);
-        startActivity(intent);
+        playPresenter.hander(position, listSong.size());
     }
 
     @Override
@@ -80,5 +80,19 @@ public class MucsicOnlineActivity extends AppCompatActivity implements OfflineSc
         this.musicPlayer = musicPlayer;
     }
 
-    ;
+
+    @Override
+    public void successed(boolean isSuccessed, int position) {
+        if(isSuccessed){
+            Intent intent = new Intent(this, PlayActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putParcelableArrayListExtra(LIST_SONG, (ArrayList<? extends Parcelable>) listSong);
+            intent.putExtra(POSITION, position);
+            intent.putExtra(TYPE, true);
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Size is is illegaled", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

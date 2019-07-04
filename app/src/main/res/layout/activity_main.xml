@@ -7,7 +7,7 @@
     android:gravity="center"
     android:background="#6C9DFE"
     android:layout_height="match_parent"
-    tools:context=".view.MainActivity">
+    tools:context=".view.main.MainActivity">
 
     <Button
         android:id="@+id/btnListenToMusicOffline"

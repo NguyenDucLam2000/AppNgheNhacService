@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.model.Song;
-import com.example.appnghenhackhongservice.offline.OfflineScreenView;
+import com.example.appnghenhackhongservice.view.offline.OfflineScreenView;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

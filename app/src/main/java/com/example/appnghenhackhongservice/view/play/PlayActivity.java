@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.view;
+package com.example.appnghenhackhongservice.view.play;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,12 +15,12 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.example.appnghenhackhongservice.Player.AutoNext;
+import com.example.appnghenhackhongservice.presenter.player.AutoNext;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.notification.MusicNotifycation;
-import com.example.appnghenhackhongservice.recevier.UpdateUI;
+import com.example.appnghenhackhongservice.presenter.receiver.UpdateUI;
 import com.example.appnghenhackhongservice.service.MusicService;
 
 import org.greenrobot.eventbus.EventBus;

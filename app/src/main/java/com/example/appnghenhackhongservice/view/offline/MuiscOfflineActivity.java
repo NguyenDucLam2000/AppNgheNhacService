@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.offline;
+package com.example.appnghenhackhongservice.view.offline;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,13 +12,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
-import com.example.appnghenhackhongservice.Player.MusicPlayer;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.adapter.MusicAdapter;
 import com.example.appnghenhackhongservice.model.ListSong;
 import com.example.appnghenhackhongservice.model.LoadListSong;
 import com.example.appnghenhackhongservice.model.Song;
-import com.example.appnghenhackhongservice.view.PlayActivity;
+import com.example.appnghenhackhongservice.presenter.player.MusicPlayer;
+import com.example.appnghenhackhongservice.view.play.PlayActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -98,8 +98,8 @@ public class MuiscOfflineActivity extends AppCompatActivity implements ListSong,
         if (musicPlayer != null) {
             musicPlayer.release();
         }
+
         Intent intent = new Intent(this, PlayActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putParcelableArrayListExtra(LIST_SONG, (ArrayList<? extends Parcelable>) listSong);
         intent.putExtra(POSITION, position);
         intent.putExtra(TYPE, true);

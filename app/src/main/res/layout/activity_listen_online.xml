@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_height="match_parent"
-    tools:context=".online.NavigationActivity">
+    tools:context=".view.online.NavigationActivity">
 
     <EditText
         android:layout_marginTop="50dp"

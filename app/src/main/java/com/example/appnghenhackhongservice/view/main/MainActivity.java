@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.view;
+package com.example.appnghenhackhongservice.view.main;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.appnghenhackhongservice.R;
-import com.example.appnghenhackhongservice.offline.MuiscOfflineActivity;
-import com.example.appnghenhackhongservice.online.NavigationActivity;
+import com.example.appnghenhackhongservice.view.offline.MuiscOfflineActivity;
+import com.example.appnghenhackhongservice.view.online.NavigationActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnListenToMusicOnline, btnListenToMusicOffline;

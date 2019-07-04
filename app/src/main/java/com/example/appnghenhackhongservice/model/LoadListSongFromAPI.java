@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.data;
+package com.example.appnghenhackhongservice.model;
 
 import android.app.ProgressDialog;
 import android.content.Context;

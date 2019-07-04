@@ -1,10 +1,10 @@
-package com.example.appnghenhackhongservice.recevier;
+package com.example.appnghenhackhongservice.presenter.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.appnghenhackhongservice.Player.MusicPlayer;
+import com.example.appnghenhackhongservice.presenter.player.MusicPlayer;
 import com.example.appnghenhackhongservice.notification.MusicNotifycation;
 
 public class NotificationReceiver extends BroadcastReceiver {

@@ -15,7 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 
-import com.example.appnghenhackhongservice.view.PlayActivity;
+import com.example.appnghenhackhongservice.view.play.PlayActivity;
 import com.example.appnghenhackhongservice.R;
 import com.example.appnghenhackhongservice.model.Song;
 import com.example.appnghenhackhongservice.service.MusicService;

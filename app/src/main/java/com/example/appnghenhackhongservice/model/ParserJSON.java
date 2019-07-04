@@ -1,8 +1,6 @@
-package com.example.appnghenhackhongservice.data;
+package com.example.appnghenhackhongservice.model;
 
 import android.content.Context;
-
-import com.example.appnghenhackhongservice.model.Song;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

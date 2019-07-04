@@ -1,4 +1,4 @@
-package com.example.appnghenhackhongservice.Player;
+package com.example.appnghenhackhongservice.presenter.player;
 
 public interface AutoNext {
     void onAutoNext();
