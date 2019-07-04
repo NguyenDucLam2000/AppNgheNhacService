@@ -29,7 +29,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/txtTenBaiHat"
+                android:id="@+id/txtSongName"
                 android:text="Chiều Xuân Xa Nhà"
                 android:textStyle="bold"
                 android:textSize="18dp"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:id="@+id/txtTenCaSi"
+                android:id="@+id/txtSingerName"
                 android:text="Quang Lê"
                 android:textSize="18dp"
                 android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/txtThoiGianBaiHat"
+            android:id="@+id/txtSongDuration"
             android:layout_weight="1"
             android:text="05:00"
             android:textSize="18dp"

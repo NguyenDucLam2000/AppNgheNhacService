@@ -1,8 +1,6 @@
-package com.example.appnghenhackhongservice.parserjon;
+package com.example.appnghenhackhongservice.model;
 
 import android.content.Context;
-
-import com.example.appnghenhackhongservice.model.BaiHat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,38 +10,33 @@ import java.util.Collections;
 
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
-public class ParserJSON
-{
+public class ParserJSON {
     public static Context context;
-    public static ArrayList<BaiHat> getListSong(Context context, String data)
-    {
+
+    public static ArrayList<Song> getListSong(Context context, String data) {
         ParserJSON.context = context;
-        ArrayList<BaiHat> listSong = new ArrayList<>();
-        try
-        {
+        ArrayList<Song> listSong = new ArrayList<>();
+        try {
             JSONObject jData = new JSONObject(data);
             JSONArray jListSong = jData.getJSONArray("results");
             int length = jListSong.length();
-            for(int i = 0; i < length; ++i)
-            {
+            for (int i = 0; i < length; ++i) {
                 JSONObject jSong = jListSong.getJSONObject(i);
-                final BaiHat baiHat = new BaiHat();
-                baiHat.setTenBaiHat(jSong.getString("name"));
-                baiHat.setData(jSong.getString("src"));
-                baiHat.setVitri(jSong.getInt("position"));
+                final Song song = new Song();
+                song.setSongName(jSong.getString("name"));
+                song.setData(jSong.getString("src"));
+                song.setPosition(jSong.getInt("position"));
                 FFmpegMediaMetadataRetriever mmr = new FFmpegMediaMetadataRetriever();
                 mmr.setDataSource(jSong.getString("src"));
                 long duration = Long.parseLong(mmr.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION));
                 mmr.release();
-                baiHat.setThoiGian(duration);
-                listSong.add(baiHat);
-                //Log.d("Song ", song.toString());
+                song.setTime(duration);
+                listSong.add(song);
             }
             Collections.sort(listSong);
             return listSong;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
         return null;

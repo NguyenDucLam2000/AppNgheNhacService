@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ứng dụng nghe nhạc</string>
-    <string name="btnOffline">Nghe nhạc offline</string>
-    <string name="btnOnline">Nghe nhạc online</string>
+    <string name="app_name">App Music</string>
+    <string name="btn_offline">Listen Offline</string>
+    <string name="btn_online">Listten Online</string>
 </resources>

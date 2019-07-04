@@ -1,7 +1,6 @@
 package com.example.appnghenhackhongservice.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,126 +11,84 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.appnghenhackhongservice.R;
-import com.example.appnghenhackhongservice.model.BaiHat;
+import com.example.appnghenhackhongservice.model.Song;
+import com.example.appnghenhackhongservice.view.offline.OfflineScreenView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder>
-{
-    private List<BaiHat> listBaiHat;
+public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
+    private List<Song> listSong;
     private Context context;
-    Intent intent;
-    public static String BAIHAT = "BaiHat";
-    public static String LISTBAIHAT = "ListBaiHat";
-    public static String POSITION = "Position";
-    public static String DURATION = "Duration";
-    private boolean isSend = false;
-    private SongClicked songClicked;
+    public static final String LIST_SONG = "ListBaiHat";
+    public static final String POSITION = "Position";
+    public static final String DURATION = "Duration";
+    public static final String TYPE = "Type";
+    private OfflineScreenView offlineScreenView;
 
-    public SongClicked getSongClicked()
-    {
-        return songClicked;
-    }
-
-    public void setSongClicked(SongClicked songClicked)
-    {
-        this.songClicked = songClicked;
-    }
-
-    public MusicAdapter()
-    {
-
-    }
-
-    public MusicAdapter(Context context, List<BaiHat> listBaiHat)
-    {
+    public MusicAdapter(Context context, List<Song> listSong, OfflineScreenView offlineScreenView) {
         this.context = context;
-        this.listBaiHat = listBaiHat;
+        this.listSong = listSong;
+        this.offlineScreenView = offlineScreenView;
     }
 
-    public List<BaiHat> getListBaiHat()
-    {
-        return listBaiHat;
+    public List<Song> getListSong() {
+        return listSong;
     }
 
-    public void setListBaiHat(List<BaiHat> listBaiHat)
-    {
-        this.listBaiHat = listBaiHat;
+    public void setListSong(List<Song> listSong) {
+        this.listSong = listSong;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i)
-    {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view = inflater.inflate(R.layout.recycleview_item, viewGroup, false);
+        View view = inflater.inflate(R.layout.item, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
-    {
-        if (listBaiHat.get(i).getHinh() != null)
-        {
-            viewHolder.imgHinh.setImageBitmap(BitmapFactory.decodeFile(listBaiHat.get(i).getHinh()));
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        if (listSong.get(i).getImage() != null) {
+            viewHolder.imgHinh.setImageBitmap(BitmapFactory.decodeFile(listSong.get(i).getImage()));
         }
-        else
-        {
+        else {
             viewHolder.imgHinh.setImageResource(R.drawable.music);
         }
-        if (listBaiHat.get(i).getTenCaSi() != null)
-        {
-            viewHolder.txtTenCaSi.setText(listBaiHat.get(i).getTenCaSi());
+        if (listSong.get(i).getSingerName() != null) {
+            viewHolder.txtSingerName.setText(listSong.get(i).getSingerName());
         }
-        else
-        {
-            viewHolder.txtTenCaSi.setText("None");
+        else {
+            viewHolder.txtSingerName.setText("None");
         }
-        viewHolder.txtTenBaiHat.setText(listBaiHat.get(i).getTenBaiHat());
-        //Log.d("Name", listBaiHat.get(i).getTenBaiHat());
-        long time = listBaiHat.get(i).getThoiGian() / 1000;
-        viewHolder.txtThoiGianBaiHat.setText((time / 60) + ":" + (time % 60 <= 9 ? ("0" + time % 60) : time % 60));
+        viewHolder.txtSongName.setText(listSong.get(i).getSongName());
+        viewHolder.txtSongDuration.setText(new SimpleDateFormat("mm:ss").format(listSong.get(i).gettime()));
     }
 
     @Override
-    public int getItemCount()
-    {
-        return listBaiHat.size();
+    public int getItemCount() {
+        return listSong.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imgHinh;
-        TextView txtTenCaSi, txtTenBaiHat, txtThoiGianBaiHat;
+        TextView txtSingerName, txtSongName, txtSongDuration;
 
-        public ViewHolder(@NonNull View itemView)
-        {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgHinh = itemView.findViewById(R.id.imgHinh);
-            txtTenBaiHat = itemView.findViewById(R.id.txtTenBaiHat);
-            txtThoiGianBaiHat = itemView.findViewById(R.id.txtThoiGianBaiHat);
-            txtTenCaSi = itemView.findViewById(R.id.txtTenCaSi);
+            txtSongName = itemView.findViewById(R.id.txtSongName);
+            txtSongDuration = itemView.findViewById(R.id.txtSongDuration);
+            txtSingerName = itemView.findViewById(R.id.txtSingerName);
             itemView.setOnClickListener(this);
         }
 
         @Override
-        public void onClick(View v)
-        {
-            //Toast.makeText(context, listBaiHat.get(getAdapterPosition()).getThoiGian() + "", Toast.LENGTH_LONG).show();
-/*            intent = new Intent(context, PlaySongActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);*/
-            //intent.putExtra(BAIHAT, listBaiHat.get(getAdapterPosition()));
-/*            if(isSend == false)
-            {
-                isSend = true;
-            }*/
-/*            intent.putParcelableArrayListExtra(LISTBAIHAT, (ArrayList<? extends Parcelable>) listBaiHat);
-            intent.putExtra(POSITION, getAdapterPosition());
-            intent.putExtra(BAIHAT, listBaiHat.get(getAdapterPosition()));
-            //intent.putExtra(DURATION, listBaiHat.get(getAdapterPosition()).getThoiGian());
-            //Log.d("Position", getAdapterPosition() + "");
-            //Log.d("baiHat", listBaiHat.get(getAdapterPosition()).getTenBaiHat());
-            context.startActivity(intent);*/
+        public void onClick(View v) {
+            if (offlineScreenView != null) {
+                offlineScreenView.songclick(getAdapterPosition());
+            }
         }
     }
 }
